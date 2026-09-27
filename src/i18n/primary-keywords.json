@@ -1,0 +1,32 @@
+{
+  "it": {
+    "home": "trasferire file",
+    "lan": "trasferire file dal browser",
+    "cloud": "inviare file pesanti"
+  },
+  "id": {
+    "home": "kirim file",
+    "lan": "transfer file lewat browser",
+    "cloud": "kirim file besar"
+  },
+  "ko": {
+    "home": "파일 전송",
+    "lan": "웹 파일 전송",
+    "cloud": "대용량 파일 보내기"
+  },
+  "vi": {
+    "home": "chuyển file từ điện thoại sang máy tính",
+    "lan": "chuyển file qua Wi-Fi",
+    "cloud": "gửi file dung lượng lớn"
+  },
+  "th": {
+    "home": "ส่งไฟล์จากมือถือไปคอม",
+    "lan": "ส่งไฟล์ไร้สาย",
+    "cloud": "ส่งไฟล์ขนาดใหญ่"
+  },
+  "ru": {
+    "home": "передать файлы с телефона на компьютер",
+    "lan": "передача файлов по Wi-Fi",
+    "cloud": "отправить большой файл"
+  }
+}
