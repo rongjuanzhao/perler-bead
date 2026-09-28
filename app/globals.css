@@ -88,14 +88,31 @@ body {
 .panel-title-copy { width: 100%; max-width: 820px; margin: 0 auto; }
 .panel-title-copy p { margin: 15px auto 0; color: #696674; font-size: .92rem; line-height: 1.72; }
 .panel-title-copy strong { color: #e35e4c; font-weight: 800; }
-.panel-rainbow { position: absolute; top: 50%; left: min(-34px, calc(50px - ((100vw - 1134px) / 2))); display: block; width: 152px; height: auto; transform: translateY(-50%); filter: drop-shadow(0 12px 18px rgba(81, 49, 40, .14)); }
-.panel-star { position: absolute; top: 50%; right: min(-34px, calc(50px - ((100vw - 1134px) / 2))); display: block; width: 112px; height: auto; transform: translateY(-50%) rotate(5deg); filter: drop-shadow(0 12px 18px rgba(81, 49, 40, .14)); }
+.panel-rainbow { position: absolute; top: 50%; left: min(-34px, calc(50px - ((100vw - 1134px) / 2))); display: block; width: 152px; height: auto; transform: translateY(-50%); filter: drop-shadow(0 12px 18px rgba(81, 49, 40, .14)); animation: rainbow-pop-in 900ms cubic-bezier(.2, .9, .25, 1.18) 120ms both; }
+.panel-star { position: absolute; top: 50%; right: min(-34px, calc(50px - ((100vw - 1134px) / 2))); display: block; width: 112px; height: auto; transform: translateY(-50%) rotate(5deg); filter: drop-shadow(0 12px 18px rgba(81, 49, 40, .14)); animation: star-pop-in 900ms cubic-bezier(.2, .9, .25, 1.18) 200ms both; }
+
+@keyframes rainbow-pop-in {
+  0% { opacity: 0; transform: translate3d(-42vw, -50%, 0) rotate(-10deg) scale(.72); }
+  72% { opacity: 1; transform: translate3d(14px, -50%, 0) rotate(2deg) scale(1.04); }
+  100% { opacity: 1; transform: translate3d(0, -50%, 0) rotate(0) scale(1); }
+}
+
+@keyframes star-pop-in {
+  0% { opacity: 0; transform: translate3d(42vw, -50%, 0) rotate(18deg) scale(.72); }
+  72% { opacity: 1; transform: translate3d(-14px, -50%, 0) rotate(2deg) scale(1.04); }
+  100% { opacity: 1; transform: translate3d(0, -50%, 0) rotate(5deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-rainbow,
+  .panel-star { animation: none; }
+}
 .panel-benefits { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 18px; }
 .panel-benefits span { display: inline-flex; align-items: center; min-height: 38px; padding: 7px 17px; border: 1px solid #f2c6b9; border-radius: 999px; color: #9d4f42; background: #fff0e7; font-size: .8rem; font-weight: 700; white-space: nowrap; }
 
 @media (max-width: 760px) {
   .studio-panel .panel-heading { min-height: 0; }
-  .panel-rainbow { position: static; width: 108px; margin: 0 auto 12px; transform: none; }
+  .panel-rainbow { position: static; width: 108px; margin: 0 auto 12px; transform: none; animation: none; }
   .panel-star { display: none; }
 }
 
