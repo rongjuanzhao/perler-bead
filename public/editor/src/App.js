@@ -6,7 +6,6 @@ import { basicPalette, colorDistance, completePalette, getColor, nearestPaletteC
 import { composeVisibleCells, createLayer, createProject, loadDraft, normalizeProject, saveDraft, withCells, withLayers } from './project.js';
 import { findIsolatedBeads, summarizeUsage } from './usage.js';
 const { useEffect, useMemo, useRef, useState } = React;
-const languageKey = 'perler-beads-generator:language';
 const ui = {
     zh: {
         appName: '拼豆图纸生成器',
@@ -487,7 +486,7 @@ export default function App() {
     const generationRequestRef = useRef(0);
     const adjustmentSessionRef = useRef({ layerId: null, baseCells: [] });
     const soloVisibilitySnapshotRef = useRef(null);
-    const [language, setLanguage] = useState(() => (localStorage.getItem(languageKey) === 'en' ? 'en' : 'zh'));
+    const language = 'en';
     const text = ui[language];
     const [project, setProject] = useState(() => loadDraft() ?? createProject());
     const [selectedColorId, setSelectedColorId] = useState(defaultColorId);
@@ -658,9 +657,6 @@ export default function App() {
     useEffect(() => {
         saveDraft(project);
     }, [project]);
-    useEffect(() => {
-        localStorage.setItem(languageKey, language);
-    }, [language]);
     useEffect(() => {
         return () => {
             if (pendingImageUrl)
@@ -1357,10 +1353,7 @@ export default function App() {
                         React.createElement("button", { className: "export-action-button", title: text.exportUsageTitle, onClick: exportUsageList }, text.exportUsageFull),
                         React.createElement("button", { className: "export-action-button", title: text.exportRecordTitle, onClick: exportEditRecord }, text.exportRecordFull),
                         React.createElement("button", { className: "export-action-button", title: text.importRecordTitle, onClick: () => jsonInputRef.current?.click() }, text.importRecordFull)))),
-            React.createElement("div", { className: "topbar-right" },
-                React.createElement("div", { className: "language-toggle", "aria-label": text.language },
-                    React.createElement("button", { className: language === 'zh' ? 'active' : '', onClick: () => setLanguage('zh') }, "\u4E2D"),
-                    React.createElement("button", { className: language === 'en' ? 'active' : '', onClick: () => setLanguage('en') }, "EN")))),
+            React.createElement("div", { className: "topbar-right", "aria-hidden": "true" })),
         React.createElement("aside", { className: "left-panel" },
             React.createElement("section", { className: "left-card preview-card" },
                 React.createElement("div", { className: "left-card-header" },

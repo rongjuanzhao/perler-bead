@@ -4,6 +4,15 @@ import { ChangeEvent, DragEvent, type CSSProperties, type MouseEvent as ReactMou
 import { Download, ExternalLink, FileSpreadsheet, Grid3X3, ImagePlus, RefreshCw, X } from "lucide-react";
 import { externalPalettes, type PaletteBrand } from "./brand-palettes";
 import { mardBasicPalette, mardCompletePalette } from "./mard-palettes";
+import PatternTemplates from "./PatternTemplates";
+
+const paletteOptions: Array<{ value: PaletteBrand; label: string; count: number }> = [
+  { value: "MARD Basic", label: "MARD Basic", count: mardBasicPalette.length },
+  { value: "MARD Complete", label: "MARD Complete", count: mardCompletePalette.length },
+  { value: "Perler", label: "Perler", count: externalPalettes.Perler.length },
+  { value: "Hama", label: "Hama", count: externalPalettes.Hama.length },
+  { value: "Artkal S", label: "Artkal S", count: externalPalettes["Artkal S"].length },
+];
 
 const distance = (a: number[], b: number[]) =>
   Math.pow(a[0] - b[0], 2) * 0.3 + Math.pow(a[1] - b[1], 2) * 0.59 + Math.pow(a[2] - b[2], 2) * 0.11;
@@ -183,16 +192,15 @@ export default function BeadStudio() {
   return (
     <main className="bead-shell">
       <nav className="bead-nav" aria-label="Primary navigation">
-        <a className="bead-brand" href="#studio"><span>bead</span>loom</a>
+        <a className="bead-brand" href="#studio" aria-label="beadloom home"><img src="/beadloom-logo.svg" alt="beadloom" /></a>
         <div className="bead-nav-links"><a href="#how">How it works</a><a href="#palette">Palette</a><a href="#about">About</a></div>
-        <button className="nav-action" onClick={() => window.location.assign("/editor")}>Create a pattern</button>
       </nav>
 
       <section className="bead-hero" id="studio">
         <div className="hero-message">
           <div className="hero-copy">
-            <h1>Perler Bead Pattern Maker </h1>
-            <p className="hero-intro">Turn a favorite image into a colorful bead pattern — then bring it to life, one tiny piece at a time.</p>
+            <h1>Instantly turn photos into a Perler bead pattern.</h1>
+            <p className="hero-intro">Turn any image into a stunning <strong>Perler bead pattern</strong> and pixel art. beadloom precisely matches your design to over 1,600 authentic fuse bead colors, supporting major brands like Perler, Hama, Artkal, and MARD. Export your Perler bead pattern as PNG and PDF files for free.</p>
             <button className="hero-action" onClick={startQuickPattern}>Start a pattern <span>→</span></button>
             <div className="hero-notes"><span>Free to use</span><span>Private by design</span></div>
           </div>
@@ -229,15 +237,18 @@ export default function BeadStudio() {
         </div>
       </section>
 
-      <section className="studio-panel" id="quick-studio" aria-label="Bead pattern converter">
+      <section className="studio-panel" id="quick-studio" aria-label="Perler bead pattern converter">
         <div className="panel-heading">
           <img className="panel-rainbow" src="/bead-rainbow.png" alt="Colorful fuse bead rainbow" />
-          <div className="panel-title-copy"><h2>Free Perler Bead Pattern Maker</h2><p>Upload any image, and <strong>beadloom</strong> precisely matches it to over 1,600 authentic fuse bead colors. It supports major brands like Perler, Hama, Artkal, and MARD, and allows you to export patterns as PNG and PDF files for free.</p><div className="panel-benefits" aria-label="Product benefits"><span>✅ 无需注册</span><span>✅ 浏览器端处理</span><span>✅ 完全免费</span></div></div>
+          <div className="panel-title-copy"><h2>Instantly turn photos into a Perler bead pattern.</h2><p>Turn any image into a stunning <strong>Perler bead pattern</strong> and pixel art. beadloom precisely matches your design to over 1,600 authentic fuse bead colors, supporting major brands like Perler, Hama, Artkal, and MARD. Export your Perler bead pattern as PNG and PDF files for free.</p><div className="panel-benefits" aria-label="Product benefits"><span>✅ No sign-up</span><span>✅ Browser-based processing</span><span>✅ Completely free</span></div></div>
           <img className="panel-star" src="/bead-star.png" alt="Yellow and orange fuse bead star" />
         </div>
         <div className="converter-toolbar">
           <strong>CONVERTER</strong>
-          {fileUrl && <div className="converter-toolbar-actions"><a href="/editor"><ExternalLink size={15} /> 去编辑</a><button type="button" onClick={() => { setFileUrl(null); setCells([]); setHoveredColor(null); }}><X size={15} /> Discard</button></div>}
+          <div className="converter-toolbar-actions">
+            <a className="converter-create-action" href="/editor">Designer <span aria-hidden="true">→</span></a>
+            {fileUrl && <button type="button" onClick={() => { setFileUrl(null); setCells([]); setHoveredColor(null); }}><X size={15} /> Discard</button>}
+          </div>
         </div>
         <div className="studio-grid">
           <section className={`preview-workspace ${fileUrl ? "has-file" : "is-empty"}`}>
@@ -256,7 +267,7 @@ export default function BeadStudio() {
             <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={(event: ChangeEvent<HTMLInputElement>) => acceptFile(event.target.files?.[0])} />
           </section>
           <aside className="controls-card">
-            <div className="brand-choice"><label htmlFor="bead-brand">Bead collection</label><select id="bead-brand" value={brand} onChange={(event) => { setCells([]); setHoveredColor(null); setBrand(event.target.value as PaletteBrand); }}><option value="MARD Basic">MARD 基础版（{mardBasicPalette.length} 色）</option><option value="MARD Complete">MARD 完整版（{mardCompletePalette.length} 色）</option><option value="Perler">Perler（{externalPalettes.Perler.length} 色）</option><option value="Hama">Hama（{externalPalettes.Hama.length} 色）</option><option value="Artkal S">Artkal S（{externalPalettes["Artkal S"].length} 色）</option></select></div>
+            <div className="brand-choice"><label htmlFor="bead-brand">Bead collection</label><select id="bead-brand" value={brand} onChange={(event) => { setCells([]); setHoveredColor(null); setBrand(event.target.value as PaletteBrand); }}>{paletteOptions.map((option) => <option value={option.value} key={option.value}>{option.label} ({option.count} colors)</option>)}</select></div>
             <div className="control-block"><label htmlFor="grid-size">Pattern width <strong>{grid} beads</strong></label><input id="grid-size" type="range" min="16" max="58" step="1" value={grid} onChange={(event) => setGrid(Number(event.target.value))} /><div className="range-ends"><span>16 beads</span><span>58 beads</span></div></div>
             <div className="control-block"><label htmlFor="color-count">Color limit <strong>{maxColors} colors</strong></label><input id="color-count" type="range" min="4" max="24" value={maxColors} onChange={(event) => setMaxColors(Number(event.target.value))} /><div className="range-ends"><span>Simple</span><span>Detailed</span></div></div>
             <div className="quick-options">
@@ -266,19 +277,19 @@ export default function BeadStudio() {
             </div>
             {fileUrl ?
               <div className="usage-compact"><div><strong>{brand} color list</strong><span>{activePalette.length} colors · {totalBeads} beads</span></div><div className="usage-scroll">{selectedPalette.map((swatch, index) => counts[index] > 0 && <div className="usage-row" key={swatch.code}><i style={{ background: swatch.hex }} /><b>{swatch.code}</b><span>{swatch.name}</span><em>{counts[index]}</em></div>)}</div></div>
-              : <p className="hint"><RefreshCw size={14} /> Your pattern appears here instantly.</p>}
+              : <p className="hint"><RefreshCw size={14} /> Your Perler bead pattern appears here instantly.</p>}
             <div className="export-actions"><button className="primary-button full" onClick={download} disabled={!fileUrl}><Download size={17} /> 导出图片</button><button className="secondary-button full" onClick={downloadUsage} disabled={!fileUrl}><FileSpreadsheet size={16} /> 导出色号</button></div>
             {fileUrl && <a className="full-editor-link" href="/editor">Open full editor <ExternalLink size={14} /></a>}
           </aside>
         </div>
       </section>
 
-      <section className="materials" id="palette">
-        <div><p className="eyebrow">02 / MATERIALS</p><h2>{fileUrl ? "Your bead list" : `A practical ${brand} palette`}</h2><p>{fileUrl ? `${grid} × ${gridHeight} grid with ${totalBeads} occupied cells, matched to ${brand} color codes.` : `Real ${brand} color codes for fast, buildable patterns.`}</p></div>
-        <div className="swatch-list">{(fileUrl ? selectedPalette.filter((_, index) => counts[index] > 0) : selectedPalette.slice(0, 12)).map((swatch) => { const index = selectedPalette.indexOf(swatch); return <div className="swatch" key={swatch.code}><i style={{ background: swatch.hex }} /><span>{swatch.name}<small>{brand} {swatch.code}</small></span><b>{fileUrl ? `${counts[index]} beads` : "available"}</b></div>; })}</div>
-      </section>
-
-      <section className="how-it-works" id="how"><p className="eyebrow">03 / EASY AS 1, 2, 3</p><div className="steps"><article><span>01</span><h3>Choose a photo</h3><p>Portraits, pets, logos, and original art all work beautifully.</p></article><article><span>02</span><h3>Tune your grid</h3><p>Use fewer beads for a punchy icon or scale up for more detail.</p></article><article><span>03</span><h3>Make it yours</h3><p>Download your guide and begin placing color, one bead at a time.</p></article></div></section>
+      <PatternTemplates beforeFaq={
+        <section className="materials" id="palette">
+          <div className="materials-copy"><h2>{fileUrl ? "Your bead list" : `Explore ${brand} colors`}</h2><p>{fileUrl ? `${grid} × ${gridHeight} grid with ${totalBeads} occupied cells, matched to ${brand} color codes.` : `Switch between the supported bead brands to preview authentic color codes from each collection.`}</p><div className="palette-tabs" aria-label="Choose a bead brand">{paletteOptions.map((option) => <button type="button" className={brand === option.value ? "is-active" : ""} aria-pressed={brand === option.value} key={option.value} onClick={() => { setCells([]); setHoveredColor(null); setBrand(option.value); }}><span>{option.label}</span><small>{option.count} colors</small></button>)}</div></div>
+          <div className="swatch-list">{(fileUrl ? selectedPalette.filter((_, index) => counts[index] > 0) : selectedPalette.slice(0, 12)).map((swatch) => { const index = selectedPalette.indexOf(swatch); return <div className="swatch" key={swatch.code}><i style={{ background: swatch.hex }} /><span>{swatch.name}<small>{brand} {swatch.code}</small></span><b>{fileUrl ? `${counts[index]} beads` : "available"}</b></div>; })}</div>
+        </section>
+      } />
 
       <footer id="about"><a className="bead-brand" href="#studio"><span>bead</span>loom</a><p>Made for slow afternoons and bright little ideas.</p><span>© {new Date().getFullYear()} Beadloom Studio</span></footer>
     </main>
