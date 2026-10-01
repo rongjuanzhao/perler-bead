@@ -21,7 +21,7 @@ export default function BeadHomePage({ messages }: { messages: HomeMessages }) {
 
   return (
     <main className="bead-shell">
-      <Header messages={messages.header} />
+      <Header brandName={messages.brandName} messages={messages.header} />
       <section className="studio-panel" id="quick-studio" aria-label={messages.converter.sectionLabel}>
         <Hero messages={messages.hero} />
         <QuickConverter messages={messages.converter} />
@@ -30,7 +30,7 @@ export default function BeadHomePage({ messages }: { messages: HomeMessages }) {
       <Steps messages={messages.steps} />
       <PaletteShowcase messages={messages.palette} />
       <FAQ messages={messages.faq} />
-      <Footer messages={messages.footer} />
+      <Footer brandName={messages.brandName} messages={messages.footer} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }} />
     </main>
   );

@@ -1,6 +1,7 @@
 export type TemplateId = "campfire" | "slime" | "heart" | "cherry" | "rainbow" | "flower";
 
 export type HomeMessages = {
+  brandName: string;
   metadata: {
     siteName: string;
     title: string;

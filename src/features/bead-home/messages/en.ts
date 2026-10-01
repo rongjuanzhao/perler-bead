@@ -1,6 +1,7 @@
 import type { HomeMessages } from "./types";
 
 export const enMessages: HomeMessages = {
+  brandName: "perlerbeadmake",
   metadata: {
     siteName: "perlerbeadmake",
     title: "Perler Bead Pattern Maker | pixel art | Image to Pattern",
