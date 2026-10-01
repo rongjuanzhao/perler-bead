@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { defaultToolLocale, getToolPath, toolLocales } from "@/src/i18n/tool-site";
-
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://video2frames.net").replace(/\/$/, "");
+import { siteUrl } from "@/src/config/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();

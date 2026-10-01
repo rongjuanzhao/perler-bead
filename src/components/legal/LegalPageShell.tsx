@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { CookieSettingsButton } from "@/src/components/analytics/CookieConsent";
 
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://video2frames.net").replace(/\/$/, "");
+export { siteUrl } from "@/src/config/site";
 export const legalContactEmail = process.env.NEXT_PUBLIC_PRIVACY_EMAIL || "dongshan1025@gmail.com";
 
 type LegalPageShellProps = {

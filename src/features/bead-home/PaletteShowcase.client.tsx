@@ -7,15 +7,15 @@ import { formatMessage } from "./messages/format";
 import type { HomeMessages } from "./messages/types";
 
 const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
+  { value: "Perler", count: externalPalettes.Perler.length },
   { value: "MARD Basic", count: mardBasicPalette.length },
   { value: "MARD Complete", count: mardCompletePalette.length },
-  { value: "Perler", count: externalPalettes.Perler.length },
   { value: "Hama", count: externalPalettes.Hama.length },
   { value: "Artkal S", count: externalPalettes["Artkal S"].length },
 ];
 
 export default function PaletteShowcase({ messages }: { messages: HomeMessages["palette"] }) {
-  const [brand, setBrand] = useState<PaletteBrand>("MARD Basic");
+  const [brand, setBrand] = useState<PaletteBrand>("Perler");
   const palette = useMemo(() => {
     if (brand === "MARD Basic") return mardBasicPalette;
     if (brand === "MARD Complete") return mardCompletePalette;
@@ -32,7 +32,13 @@ export default function PaletteShowcase({ messages }: { messages: HomeMessages["
         </div>
       </div>
       <div className="swatch-list">
-        {palette.slice(0, 12).map((swatch) => <div className="swatch" key={swatch.code}><i style={{ background: swatch.hex }} /><span>{swatch.name}<small>{brand} {swatch.code}</small></span><b>{messages.available}</b></div>)}
+        {palette.slice(0, 12).map((swatch) => {
+          const isMard = brand === "MARD Basic" || brand === "MARD Complete";
+          const displayName = isMard ? swatch.name.replace(/^MARD\s+/, "") : swatch.name;
+          const displayBrand = isMard ? brand.replace(/^MARD\s+/, "") : brand;
+
+          return <div className="swatch" key={swatch.code}><i style={{ background: swatch.hex }} /><span>{displayName}<small>{displayBrand} {swatch.code}</small></span><b>{messages.available}</b></div>;
+        })}
       </div>
     </section>
   );

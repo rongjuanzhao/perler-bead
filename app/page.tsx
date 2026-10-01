@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import BeadHomePage from "@/src/features/bead-home/BeadHomePage";
 import { enMessages } from "@/src/features/bead-home/messages/en";
+import { siteUrl } from "@/src/config/site";
 
 export const metadata: Metadata = {
   title: {
@@ -9,17 +10,17 @@ export const metadata: Metadata = {
   description: enMessages.metadata.description,
   keywords: enMessages.metadata.keywords,
   alternates: {
-    canonical: "/",
+    canonical: siteUrl + "/",
     languages: {
-      en: "/",
-      "x-default": "/",
+      en: siteUrl + "/",
+      "x-default": siteUrl + "/",
     },
   },
   openGraph: {
     title: enMessages.metadata.openGraphTitle,
     description: enMessages.metadata.openGraphDescription,
     type: "website",
-    url: "/",
+    url: siteUrl + "/",
     siteName: enMessages.metadata.siteName,
   },
   twitter: {

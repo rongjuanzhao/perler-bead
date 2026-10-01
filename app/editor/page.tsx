@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Bead Pattern Editor",
-  description: "Create, edit, and export bead patterns in the Beadloom editor.",
+  description: "Create, edit, and export bead patterns in the perlerbeadmake editor.",
 };
 
 export default function EditorPage() {

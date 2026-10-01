@@ -14,9 +14,10 @@ export type HomeMessages = {
   header: {
     navigationLabel: string;
     homeLabel: string;
+    templates: string;
     howItWorks: string;
     palette: string;
-    about: string;
+    questions: string;
   };
   hero: {
     rainbowAlt: string;
