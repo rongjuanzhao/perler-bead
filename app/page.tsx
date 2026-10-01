@@ -8,7 +8,6 @@ export const metadata: Metadata = {
     absolute: enMessages.metadata.title,
   },
   description: enMessages.metadata.description,
-  keywords: enMessages.metadata.keywords,
   alternates: {
     canonical: siteUrl + "/",
     languages: {
