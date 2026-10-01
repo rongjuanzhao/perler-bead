@@ -14,8 +14,7 @@ export const metadata: Metadata = {
     "Turn images into original fuse-bead patterns with a free, private in-browser converter.",
   applicationName: "perlerbeadmake",
   icons: {
-    icon: [{ url: "/logo.jpg", type: "image/jpeg" }],
-    shortcut: "/logo.jpg",
+    icon: [{ url: "/logo.png" }],
   },
   robots: {
     index: true,
