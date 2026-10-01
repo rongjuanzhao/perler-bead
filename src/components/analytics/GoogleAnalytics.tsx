@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Script from "next/script";
 import { markAnalyticsReady } from "@/src/lib/analytics";
 
-const GA_MEASUREMENT_ID = "G-3B4P4LCYH1";
+const GA_MEASUREMENT_ID = "G-ES2E0PR7M2";
 
 declare global {
   interface Window {

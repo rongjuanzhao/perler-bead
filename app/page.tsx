@@ -1,23 +1,13 @@
 import type { Metadata } from "next";
-import BeadStudio from "@/src/components/bead-studio/BeadStudio";
+import BeadHomePage from "@/src/features/bead-home/BeadHomePage";
+import { enMessages } from "@/src/features/bead-home/messages/en";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Free Perler Bead Pattern Maker | Image to Pattern | Beadloom",
+    absolute: enMessages.metadata.title,
   },
-  description: "Create a Perler bead pattern from any photo with Beadloom's free online pattern maker. Match real fuse bead colors and export a printable PNG pattern and color list.",
-  keywords: [
-    "perler bead pattern",
-    "perler bead pattern maker",
-    "perler bead patterns",
-    "image to bead pattern",
-    "photo to bead pattern",
-    "fuse bead pattern",
-    "bead pattern generator",
-    "printable perler bead pattern",
-    "pixel art converter",
-    "hama bead pattern",
-  ],
+  description: enMessages.metadata.description,
+  keywords: enMessages.metadata.keywords,
   alternates: {
     canonical: "/",
     languages: {
@@ -26,19 +16,19 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Free Perler Bead Pattern Maker | Beadloom",
-    description: "Turn any photo into a color-matched Perler bead pattern with a printable grid, color codes, and bead counts.",
+    title: enMessages.metadata.openGraphTitle,
+    description: enMessages.metadata.openGraphDescription,
     type: "website",
     url: "/",
-    siteName: "Beadloom",
+    siteName: enMessages.metadata.siteName,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Perler Bead Pattern Maker | Beadloom",
-    description: "Create a printable Perler bead pattern from any photo for free.",
+    title: enMessages.metadata.twitterTitle,
+    description: enMessages.metadata.twitterDescription,
   },
 };
 
 export default function RootPage() {
-  return <BeadStudio />;
+  return <BeadHomePage messages={enMessages} />;
 }
