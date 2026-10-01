@@ -1,7 +1,7 @@
 import type { HomeMessages } from "./types";
 
 export const enMessages: HomeMessages = {
-  brandName: "perlerbeadmake",
+  brandName: "perler bead maker",
   metadata: {
     siteName: "perlerbeadmake",
     title: "Perler Bead Pattern Maker | pixel art | Image to Pattern",
@@ -23,7 +23,7 @@ export const enMessages: HomeMessages = {
   hero: {
     rainbowAlt: "Colorful fuse bead rainbow",
     starAlt: "Yellow and orange fuse bead star",
-    title: "Instantly turn photos into a Perler bead pattern.",
+    title: "Instantly turn photos into a Perler bead pattern",
     descriptionBefore: "Turn any image into a stunning",
     descriptionHighlight: "Perler bead pattern",
     descriptionAfter: "and pixel art. perlerbeadmake precisely matches your design to over 1,600 authentic fuse bead colors, supporting major brands like Perler, Hama, Artkal, and MARD. Export your Perler bead pattern as PNG and PDF files for free.",

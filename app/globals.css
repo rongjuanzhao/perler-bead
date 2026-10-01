@@ -51,10 +51,9 @@ body {
 .bead-nav { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eae2d8; }
 .bead-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
 .bead-brand img { display: block; width: 46px; height: 46px; flex: none; }
-.bead-brand-name { color: #21213b; font-size: 1.75rem; font-weight: 800; letter-spacing: -.065em; line-height: 1; }
-@supports (-webkit-background-clip: text) {
-  .bead-brand-name { color: transparent; background: linear-gradient(90deg, #ee6a55 0 42%, #21213b 42% 100%); background-clip: text; -webkit-background-clip: text; }
-}
+.bead-brand-name { display: inline-flex; align-items: baseline; gap: .14em; font-size: 1.75rem; font-weight: 800; letter-spacing: -.065em; line-height: 1; }
+.bead-brand-name > span { color: #ee6a55; }
+.bead-brand-name > b { color: #21213b; font: inherit; }
 .bead-nav-links { display: flex; gap: 25px; }.bead-nav-links a { color: #666576; text-decoration: none; font-size: .9rem; }.bead-nav-links a:hover { color: #ee6a55; }
 .template-section, .template-process, .materials, .template-faq, .bead-shell footer,
 #templates-title, #faq-title { scroll-margin-top: 24px; }
