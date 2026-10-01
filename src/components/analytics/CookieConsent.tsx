@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/utils";
 
 const COOKIE_CONSENT_STORAGE_KEY = "cookieConsent";
-const OPEN_COOKIE_SETTINGS_EVENT = "video2frames:open-cookie-settings";
+const OPEN_COOKIE_SETTINGS_EVENT = "perlerbeadmake:open-cookie-settings";
 
 declare global {
   interface Window {
@@ -66,7 +66,7 @@ export default function CookieConsent() {
             Cookies and basic analytics
           </p>
           <p id="cookie-consent-description" className="mt-1 text-xs leading-5 text-[#3D3D3D]">
-            We use basic analytics to improve Video to Frames. Choose whether to also allow marketing technologies.{" "}
+            We use basic analytics to improve the Perler Bead Pattern Maker. Choose whether to also allow marketing technologies.{" "}
             <Link href="/privacy-policy#cookies" className="font-semibold underline decoration-[#A85C40] underline-offset-2">
               Learn more
             </Link>

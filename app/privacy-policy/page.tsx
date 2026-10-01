@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { LegalPageShell, legalContactEmail } from "@/src/components/legal/LegalPageShell";
+import { siteUrl } from "@/src/config/site";
 
-const lastUpdated = "August 29, 2026";
+const lastUpdated = "October 1, 2026";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Video to Frames handles local video processing, cookies, analytics, and privacy choices.",
+  description: "How the Perler Bead Pattern Maker handles local image processing, analytics, cookies, and privacy choices.",
   alternates: {
-    canonical: "/privacy-policy",
+    canonical: siteUrl + "/privacy-policy",
   },
 };
 
@@ -15,13 +16,13 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalPageShell
       title="Privacy Policy"
-      description="This policy explains what information Video to Frames handles, why it is used, and the choices available to you."
+      description="This policy explains how perlerbeadmake handles images, technical data, analytics, cookies, and your privacy choices."
       lastUpdated={lastUpdated}
     >
       <section>
         <h2>1. Who we are</h2>
         <p className="mt-3">
-          Video to Frames (&quot;Video to Frames,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates video2frames.net and its browser-based video frame extraction tool. For privacy questions or requests, contact us at{" "}
+          perlerbeadmake (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates <a href={siteUrl}>perlerbead.net</a> and provides a browser-based Perler bead pattern maker. For privacy questions or requests, contact us at{" "}
           <a href={"mailto:" + legalContactEmail}>{legalContactEmail}</a>.
         </p>
       </section>
@@ -29,17 +30,17 @@ export default function PrivacyPolicyPage() {
       <section>
         <h2>2. What this policy covers</h2>
         <p className="mt-3">
-          This policy applies to the Video to Frames website, its core in-browser video frame extraction tool, Google Analytics, and any optional advertising technologies described below. It does not cover third-party sites, browsers, operating systems, or services that have their own privacy notices.
+          This policy applies to this website, its image-to-bead-pattern converter, template gallery, palette preview, pattern editor, downloadable output, analytics, and optional advertising technologies. Third-party websites, browsers, operating systems, and services have their own privacy practices.
         </p>
       </section>
 
       <section>
-        <h2>3. Video files and generated images</h2>
+        <h2>3. Images and generated patterns</h2>
         <p className="mt-3">
-          The core Video to Frames tool processes the video you select locally in your browser. It uses browser video and canvas APIs to generate the image frames you download. We do not receive, upload, store, inspect, or process the source video or generated images on our servers as part of this core tool.
+          Images selected in the converter are processed locally in your browser using browser image and canvas APIs. The converter does not upload your source image, generated pattern, or color list to our servers. Your image remains on your device while you adjust the bead brand, pattern size, color limit, background, bead shape, grid, and color-code settings.
         </p>
         <p className="mt-3">
-          Your browser may keep temporary copies, object URLs, or downloaded files under its own rules. You control those files and can remove them from your device or browser.
+          Downloads such as PNG patterns and color or bead-count lists are created in your browser. Your browser may retain temporary object URLs, cached resources, or downloaded files according to its own settings. You control and may delete those files from your device.
         </p>
       </section>
 
@@ -47,86 +48,82 @@ export default function PrivacyPolicyPage() {
         <h2>4. Information we may process</h2>
         <h3>Technical and security information</h3>
         <p className="mt-2">
-          When you visit the site, our hosting and security providers may process technical information such as IP address, browser and device information, requested URL, referring page, timestamps, and diagnostic or security logs. We use this information to deliver the site, prevent abuse, maintain security, and diagnose technical problems.
+          When you visit the site, our hosting and security providers may process your IP address, browser and device information, requested URL, referring page, timestamps, and diagnostic or security logs. This information is used to deliver the site, prevent abuse, maintain security, and investigate technical problems.
         </p>
         <h3>Messages you send us</h3>
         <p className="mt-2">
-          If you email us, we process the contact details and message content you provide in order to respond, protect our rights, and keep appropriate records of the request.
+          If you contact us, we process the contact details and message content you provide so we can respond, protect our rights, and keep appropriate records.
         </p>
         <h3>Analytics and marketing data</h3>
         <p className="mt-2">
-          Google Analytics helps us understand aggregate use of the site. It may process online identifiers, device/browser information, pages viewed, and interaction data. Basic analytics remains enabled if you choose the &quot;Basic analytics only&quot; option in the cookie banner. Marketing is separate: advertising technologies remain disabled unless you choose &quot;Accept all&quot; and an advertising component is enabled on a page.
+          Google Analytics helps us understand aggregate site usage and may process online identifiers, browser or device details, pages viewed, and interaction data. Basic analytics remains enabled when you choose &quot;Basic analytics only.&quot; Advertising or personalization storage remains disabled unless you choose &quot;Accept all&quot; and an advertising component is enabled.
         </p>
       </section>
 
       <section id="cookies">
         <h2>5. Cookies and similar storage</h2>
-        <p className="mt-3">
-          Cookies are small text files and similar storage mechanisms are used to remember information in your browser. We separate them by purpose:
-        </p>
+        <p className="mt-3">We use browser storage and cookies for the following purposes:</p>
         <ul className="mt-3">
-          <li><strong>Preference storage.</strong> The <code>cookieConsent</code> local-storage value records whether you chose &quot;Accept all&quot; or &quot;Basic analytics only.&quot; It remains on your device until you change the setting or clear browser storage.</li>
-          <li><strong>Basic analytics.</strong> Google Analytics is loaded to measure aggregate use of the site. It may use cookies such as <code>_ga</code> and related identifiers according to Google&apos;s configuration and privacy documentation. Choosing &quot;Basic analytics only&quot; keeps analytics enabled while denying Google advertising and personalization storage.</li>
-          <li><strong>Marketing.</strong> Choosing &quot;Accept all&quot; permits advertising or marketing technologies if they are enabled on a page. Their cookies and storage are controlled by the relevant provider.</li>
+          <li><strong>Preference storage.</strong> The <code>cookieConsent</code> local-storage value remembers whether you selected &quot;Accept all&quot; or &quot;Basic analytics only.&quot;</li>
+          <li><strong>Basic analytics.</strong> Google Analytics may use <code>_ga</code> and related identifiers to measure aggregate site usage. Advertising and personalization storage are denied under the basic option.</li>
+          <li><strong>Marketing.</strong> Selecting &quot;Accept all&quot; permits optional advertising or marketing technologies when they are present on a page.</li>
         </ul>
         <p className="mt-3">
-          You can choose &quot;Accept all&quot; or &quot;Basic analytics only&quot; when the banner appears, and reopen it later through the Cookie settings link in the footer. Choosing &quot;Basic analytics only&quot; does not block access to the core tool and does not enable advertising or personalization storage. You can also control or delete analytics cookies through your browser settings.
+          You can reopen Cookie settings from the footer at any time. Selecting basic analytics does not restrict access to the pattern maker. You can also remove cookies and local-storage values through your browser settings.
         </p>
       </section>
 
       <section>
-        <h2>6. Why we use information and our legal bases</h2>
+        <h2>6. Why we use information</h2>
         <ul className="mt-3">
-          <li>To provide and secure the website and respond to requests, where necessary to provide the service or pursue legitimate interests in operating a secure service.</li>
-          <li>To comply with legal obligations and enforce our rights where applicable.</li>
-          <li>To measure aggregate use through basic analytics where permitted by applicable law, and to use marketing technologies only with your consent where consent is required.</li>
+          <li>To provide, maintain, secure, and improve the website and pattern-making tools.</li>
+          <li>To respond to messages, enforce our terms, prevent misuse, and comply with legal obligations.</li>
+          <li>To understand aggregate use through analytics where permitted by law.</li>
+          <li>To use optional marketing technologies only when the required consent has been provided.</li>
         </ul>
-        <p className="mt-3">
-          You may withdraw marketing consent at any time by reopening Cookie settings and choosing &quot;Basic analytics only.&quot; You can also use browser controls and applicable privacy rights to manage analytics cookies. A changed choice does not affect processing that occurred before the change.
-        </p>
       </section>
 
       <section>
         <h2>7. Service providers and disclosures</h2>
         <p className="mt-3">
-          We use service providers to host, deliver, secure, and support the site. These may include Cloudflare for hosting and delivery, Google for basic analytics, and advertising providers only where an advertising component is enabled and you chose &quot;Accept all.&quot; Providers process information under their own terms and privacy documentation and may process data in countries other than yours.
+          We may use providers such as Cloudflare for hosting, delivery, and security, and Google for analytics. Optional advertising providers are used only where their components are enabled and your consent choice permits them. These providers process information under their own terms and privacy policies and may process data in countries other than yours.
         </p>
         <p className="mt-3">
-          We may also disclose information where reasonably necessary to comply with law, protect users or the public, investigate abuse, or protect our rights and property.
+          We may disclose information when reasonably necessary to comply with law, investigate abuse, protect users or the public, or defend our rights and property.
         </p>
       </section>
 
       <section>
         <h2>8. Retention and international transfers</h2>
         <p className="mt-3">
-          The core tool does not send your video or extracted images to us. We retain technical logs and correspondence only for as long as reasonably necessary for the purposes above, legal obligations, dispute resolution, and security. The local Cookie preference remains until you change it or clear browser storage. Third-party retention periods are governed by the applicable provider&apos;s configuration and policies.
+          We do not retain source images or generated patterns through the converter because those files are not sent to us. Technical logs and correspondence are retained only as long as reasonably necessary for operations, security, legal obligations, and dispute resolution. Cookie preferences remain on your device until changed or cleared. Third-party retention is governed by each provider&apos;s policies and configuration.
         </p>
         <p className="mt-3">
-          Our providers may process information internationally. Where required, we use appropriate safeguards for international transfers, such as contractual protections or other legally recognized transfer mechanisms.
+          Service providers may process information internationally. Where required, appropriate contractual or other legally recognized safeguards are used.
         </p>
       </section>
 
       <section>
         <h2>9. Your privacy rights</h2>
         <p className="mt-3">
-          Depending on where you live and applicable law, you may have rights to request access to, correction of, deletion of, restriction of, or objection to processing of your personal information, as well as data portability. You may also withdraw consent and, where applicable, lodge a complaint with your local data-protection authority.
+          Depending on your location, you may have rights to request access to, correction of, deletion of, restriction of, or objection to processing of personal information, as well as portability and withdrawal of consent. You may also have the right to complain to a data-protection authority.
         </p>
         <p className="mt-3">
-          To make a request, email <a href={"mailto:" + legalContactEmail}>{legalContactEmail}</a>. We may need to verify your request before acting on it. We do not offer personal information for payment. Certain marketing implementations may be treated as a sale or sharing under applicable law; choosing &quot;Basic analytics only&quot; in Cookie settings acts as an opt-out for marketing technologies in that browser.
+          To submit a request, email <a href={"mailto:" + legalContactEmail}>{legalContactEmail}</a>. We may need to verify a request before responding. You can withdraw optional marketing consent through Cookie settings at any time.
         </p>
       </section>
 
       <section>
         <h2>10. Children and security</h2>
         <p className="mt-3">
-          Video to Frames is not directed to children, and we do not knowingly collect personal information from children. Please do not send us personal information about a child without appropriate authority. We use reasonable technical and organizational measures to protect information, but no online service can guarantee absolute security.
+          The service is not directed to children under the age at which parental consent is required in their location, and we do not knowingly collect personal information from children. We use reasonable safeguards to protect information, but no online service can guarantee absolute security.
         </p>
       </section>
 
       <section>
         <h2>11. Changes to this policy</h2>
         <p className="mt-3">
-          We may update this policy when the service, technologies, or legal requirements change. We will post the revised version here and update the date above. Material changes to optional tracking purposes will require a fresh choice where required by law.
+          We may update this policy when the service, technology, or legal requirements change. The revised version will be posted on this page with an updated date. Where required, material changes to optional tracking will be presented for a new consent choice.
         </p>
       </section>
     </LegalPageShell>
