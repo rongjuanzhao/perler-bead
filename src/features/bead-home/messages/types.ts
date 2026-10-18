@@ -119,5 +119,6 @@ export type HomeMessages = {
     homeLabel: string;
     tagline: string;
     copyright: string;
+    disclaimer: string;
   };
 };

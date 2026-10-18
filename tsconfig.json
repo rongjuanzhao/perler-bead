@@ -30,7 +30,8 @@
     "src/components/video-to-frames/**/*.tsx",
     "src/i18n/tool-site.ts",
     "src/lib/utils.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next-dev/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

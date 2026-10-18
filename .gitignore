@@ -9,6 +9,7 @@ pnpm-debug.log*
 
 # Next.js
 .next/
+.next-dev/
 .open-next
 .wrangler
 out/

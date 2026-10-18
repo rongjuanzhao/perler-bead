@@ -12,6 +12,7 @@ export default function Footer({ brandName, messages }: { brandName: string; mes
       </a>
       <p>{messages.tagline}</p>
       <span>{formatMessage(messages.copyright, { year: new Date().getFullYear() })}</span>
+      <p className="bead-footer-disclaimer">{messages.disclaimer}</p>
     </footer>
   );
 }

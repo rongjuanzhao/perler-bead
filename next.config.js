@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Keep the development server's assets separate from production builds.
+  distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
   // 静态资源优化
   images: {
     unoptimized: true,

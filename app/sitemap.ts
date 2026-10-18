@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...toolPages,
+    { url: siteUrl + "/sprite-maker", lastModified, changeFrequency: "monthly", priority: 0.8 },
     {
       url: siteUrl + "/privacy-policy",
       lastModified,

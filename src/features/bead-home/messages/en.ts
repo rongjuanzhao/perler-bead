@@ -132,5 +132,6 @@ export const enMessages: HomeMessages = {
     homeLabel: "perlerbeadmake home",
     tagline: "Made for slow afternoons and bright little ideas.",
     copyright: "© {year} perlerbeadmake",
+    disclaimer: "This site is an independent fan/tool website with no affiliation, association, or authorization from the Perler® brand. All Perler trademarks belong to their respective owners.",
   },
 };
