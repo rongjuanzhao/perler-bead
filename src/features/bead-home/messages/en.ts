@@ -125,7 +125,7 @@ export const enMessages: HomeMessages = {
       { question: "Which fuse bead brands are supported?", answer: "perlerbeadmake supports MARD Basic, MARD Complete, Perler, Hama, and Artkal S palettes. Your image is matched to the closest available colors in the brand collection you choose." },
       { question: "Are my images uploaded to a server?", answer: "No. Images are processed locally in your browser and are not uploaded to our servers. Your source image stays on your device, and refreshing or closing the page clears the current session." },
       { question: "What image formats are supported?", answer: "perlerbeadmake supports JPEG, PNG, and WebP images. Transparent areas in PNG or WebP files are treated as empty cells, so they will not be filled with beads in the generated pattern." },
-      { question: "How many bead colors are available?", answer: "The available colors depend on the selected collection: MARD Basic includes 221 colors, MARD Complete includes 291, Perler includes 70, Hama includes 50, and Artkal S includes 35. You can use the color-limit control to reduce the number of colors in a pattern for an easier build." },
+      { question: "How many bead colors are available?", answer: "The available colors depend on the selected collection: MARD Basic includes 221 colors, MARD Complete includes 291, Perler includes 103, Hama includes 92, and Artkal S includes 35. You can use the color-limit control to reduce the number of colors in a pattern for an easier build." },
     ],
   },
   footer: {
