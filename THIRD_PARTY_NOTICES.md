@@ -139,3 +139,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE DATA OR THE USE OR OTHER DEALINGS IN THE
 DATA.
+
+## COCO palette data
+
+The 291 entries in `src/components/bead-studio/coco-palette.ts` were imported
+from HansBug/pindou-color-data on 2026-11-01:
+
+- https://github.com/HansBug/pindou-color-data/tree/main/coco-291
+- colors.json Git blob SHA: `e0938073b3a43bb3ab17446f6f8fb0e170aab747`
+
+Changes: original codes are used as display names; all HEX values and their
+order are retained. All 291 entries have numeric RGB values. The source
+identifies these as third-party public repository data from
+https://git.xiongxiao.me/abearxiong/get-colors-from-beans/src/branch/main/get-colors.json,
+not an official COCO color standard.
+
+The HansBug MIT License and Copyright (c) 2026 HansBug notice reproduced in
+the Artkal M section above also apply to this dataset.

@@ -15,6 +15,7 @@ const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
   { value: "Artkal S", count: externalPalettes["Artkal S"].length },
   { value: "Artkal C", count: externalPalettes["Artkal C"].length },
   { value: "Artkal M", count: externalPalettes["Artkal M"].length },
+  { value: "COCO", count: externalPalettes.COCO.length },
 ];
 
 const distance = (a: number[], b: number[]) =>

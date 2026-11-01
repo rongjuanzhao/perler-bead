@@ -1,7 +1,8 @@
+import { cocoPalette } from "./coco-palette";
 import { artkalCPalette, artkalMPalette } from "./artkal-mini-palettes";
 
 export type BrandSwatch = { name: string; hex: string; code: string; transparent?: boolean };
-export type PaletteBrand = "MARD Basic" | "MARD Complete" | "Perler" | "Hama" | "Artkal S" | "Artkal C" | "Artkal M";
+export type PaletteBrand = "MARD Basic" | "MARD Complete" | "Perler" | "Hama" | "Artkal S" | "Artkal C" | "Artkal M" | "COCO";
 
 // Perler Midi community reference (103 colors), downloaded 2026-10-31.
 // https://beadcolor.com/perler-color-chart — see THIRD_PARTY_NOTICES.md.
@@ -394,4 +395,5 @@ export const externalPalettes: Record<Exclude<PaletteBrand, "MARD Basic" | "MARD
   "Artkal S": artkalS,
   "Artkal C": artkalCPalette,
   "Artkal M": artkalMPalette,
+  COCO: cocoPalette,
 };
