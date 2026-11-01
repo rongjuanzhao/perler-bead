@@ -13,6 +13,8 @@ const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
   { value: "Perler", count: externalPalettes.Perler.length },
   { value: "Hama", count: externalPalettes.Hama.length },
   { value: "Artkal S", count: externalPalettes["Artkal S"].length },
+  { value: "Artkal C", count: externalPalettes["Artkal C"].length },
+  { value: "Artkal M", count: externalPalettes["Artkal M"].length },
 ];
 
 const distance = (a: number[], b: number[]) =>
@@ -74,7 +76,8 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
         if (pixels.data[i + 3] < 80) continue;
         const rgb = [pixels.data[i], pixels.data[i + 1], pixels.data[i + 2]];
         if (backgroundMode === "remove-light" && distance(rgb, background) < 1150) continue;
-        const closest = paletteRgb.reduce((best, candidate, index) => distance(rgb, candidate) < distance(rgb, paletteRgb[best]) ? index : best, 0);
+        // Transparent reference entries have no opaque RGB to match a photo.
+        const closest = paletteRgb.reduce((best, candidate, index) => !selectedPalette[index].transparent && distance(rgb, candidate) < distance(rgb, paletteRgb[best]) ? index : best, 0);
         nearest[i / 4] = closest;
         frequency[closest]++;
       }
