@@ -1,7 +1,7 @@
 import type { HomeMessages } from "../messages/types";
 import Link from "next/link";
 
-export default function Header({ brandName, messages }: { brandName: string; messages: HomeMessages["header"] }) {
+export default function Header({ brandName, messages, activePage }: { brandName: string; messages: HomeMessages["header"]; activePage?: "beadcolor" }) {
   const [accentName, ...baseName] = brandName.split(" ");
 
   return (
@@ -22,11 +22,13 @@ export default function Header({ brandName, messages }: { brandName: string; mes
             <Link href="/cross-stitch">Cross Stitch</Link>
           </div>
         </div>
+        <Link href="/beadcolor" aria-current={activePage === "beadcolor" ? "page" : undefined}>{messages.beadcolor}</Link>
         <Link href="/#templates-title">{messages.templates}</Link>
         <Link href="/#how">{messages.howItWorks}</Link>
         <Link href="/#palette">{messages.palette}</Link>
         <Link href="/#faq-title">{messages.questions}</Link>
       </div>
+      <Link className="bead-nav-mobile-color" href="/beadcolor" aria-current={activePage === "beadcolor" ? "page" : undefined}>{messages.beadcolor}</Link>
     </nav>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { colorLibraries } from "@/src/features/beadcolor/libraries";
 import { externalPalettes, type PaletteBrand } from "@/src/components/bead-studio/brand-palettes";
 import { mardBasicPalette, mardCompletePalette } from "@/src/components/bead-studio/mard-palettes";
 import { formatMessage } from "./messages/format";
@@ -19,6 +22,7 @@ const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
 
 export default function PaletteShowcase({ messages }: { messages: HomeMessages["palette"] }) {
   const [brand, setBrand] = useState<PaletteBrand>("Perler");
+  const selectedLibrary = colorLibraries.find((library) => library.name === brand);
   const palette = useMemo(() => {
     if (brand === "MARD Basic") return mardBasicPalette;
     if (brand === "MARD Complete") return mardCompletePalette;
@@ -33,6 +37,7 @@ export default function PaletteShowcase({ messages }: { messages: HomeMessages["
         <div className="palette-tabs" aria-label={messages.chooserLabel}>
           {paletteOptions.map((option) => <button type="button" className={brand === option.value ? "is-active" : ""} aria-pressed={brand === option.value} key={option.value} onClick={() => setBrand(option.value)}><span>{option.value}</span><small>{formatMessage(messages.colors, { count: option.count })}</small></button>)}
         </div>
+        {selectedLibrary && <Link className="palette-view-all" href={`/beadcolor/${selectedLibrary.slug}`}>{messages.viewAll} <ArrowRight size={16} aria-hidden="true" /></Link>}
       </div>
       <div className="swatch-list">
         {palette.slice(0, 12).map((swatch) => {

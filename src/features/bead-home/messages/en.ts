@@ -18,6 +18,7 @@ export const enMessages: HomeMessages = {
     templates: "Templates",
     howItWorks: "How it works",
     palette: "Palette",
+    beadcolor: "BeadColor",
     questions: "Questions",
   },
   hero: {
@@ -114,6 +115,7 @@ export const enMessages: HomeMessages = {
     chooserLabel: "Choose a bead brand",
     colors: "{count} colors",
     available: "Available",
+    viewAll: "View all colors",
   },
   faq: {
     title: "Frequently Asked Questions",

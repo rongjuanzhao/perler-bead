@@ -18,6 +18,7 @@ export type HomeMessages = {
     templates: string;
     howItWorks: string;
     palette: string;
+    beadcolor: string;
     questions: string;
   };
   hero: {
@@ -109,6 +110,7 @@ export type HomeMessages = {
     chooserLabel: string;
     colors: string;
     available: string;
+    viewAll: string;
   };
   faq: {
     title: string;

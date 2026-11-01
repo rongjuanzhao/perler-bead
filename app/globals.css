@@ -576,3 +576,15 @@ body {
 
 /* Keep the Designers menu accessible on narrow screens. */
 @media (max-width: 760px) { .bead-nav-links { display: flex; gap: 0; }.bead-nav-links > a { display: none; }.bead-nav-menu { left: auto; right: 0; transform: none; }.bead-brand-name { font-size: 1.4rem; } }
+
+/* Color library navigation stays reachable on small screens. */
+.bead-nav-links a[aria-current="page"] { color: #cf644e; }
+.bead-nav-mobile-color { display: none; }
+@media (max-width: 760px) { .bead-nav-mobile-color { display: inline-flex; color: #b9614c; font-size: 12px; font-weight: 650; text-decoration: none; padding: 8px 11px; border: 1px solid #e4c9b6; border-radius: 6px; } }
+
+@media (min-width: 761px) and (max-width: 1000px) { .bead-nav-links { gap: 15px; } .bead-nav-links a { font-size: 12px; } .bead-brand-name { font-size: 1.45rem; } }
+@media (max-width: 760px) { .bead-nav { gap: 8px; } .bead-nav .bead-brand { gap: 6px; } .bead-nav .bead-brand img { width: 32px; height: 32px; } .bead-nav .bead-brand-name { font-size: 1.15rem; } .bead-nav .bead-nav-toggle { font-size: 11px; padding: 8px 0; } .bead-nav-mobile-color { font-size: 10px; padding: 7px 8px; } }
+
+.palette-view-all { display: inline-flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px; padding: 13px 18px; border: 1px solid #3b2824; color: #fff; background: #3b2824; font-size: .8rem; font-weight: 700; text-decoration: none; transition: background .18s ease, border-color .18s ease; }
+.palette-view-all:hover { background: #bc5c48; border-color: #bc5c48; }
+.palette-view-all:focus-visible { outline: 2px solid #ee6a55; outline-offset: 4px; }

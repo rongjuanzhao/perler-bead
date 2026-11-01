@@ -1,3 +1,4 @@
+import { colorLibraries } from "@/src/features/beadcolor/libraries";
 import type { MetadataRoute } from "next";
 import { defaultToolLocale, getToolPath, toolLocales } from "@/src/i18n/tool-site";
 import { siteUrl } from "@/src/config/site";
@@ -23,6 +24,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...toolPages,
+    { url: siteUrl + "/beadcolor", lastModified, changeFrequency: "monthly", priority: 0.8 },
+    ...colorLibraries.map(library => ({ url: `${siteUrl}/beadcolor/${library.slug}`, lastModified, changeFrequency: "monthly" as const, priority: 0.7 })),
     { url: siteUrl + "/sprite-maker", lastModified, changeFrequency: "monthly", priority: 0.8 },
     {
       url: siteUrl + "/privacy-policy",
