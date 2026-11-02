@@ -1,4 +1,5 @@
 import App from './App.js';
+import { readConverterHandoff } from './converter-handoff.js';
 class AppErrorBoundary extends React.Component {
     constructor() {
         super(...arguments);
@@ -23,7 +24,14 @@ class AppErrorBoundary extends React.Component {
         return this.props.children;
     }
 }
+let initialHandoff = null;
+try {
+    initialHandoff = await readConverterHandoff();
+} catch (error) {
+    document.getElementById('root').textContent = error.message;
+    throw error;
+}
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(React.StrictMode, null,
     React.createElement(AppErrorBoundary, null,
-        React.createElement(App, null))));
+        React.createElement(App, { initialHandoff }))));
 //# sourceMappingURL=main.js.map

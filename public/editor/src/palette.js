@@ -329,6 +329,10 @@ function makePalette(colors) {
 export const basicPalette = makePalette(rawColors);
 export const completePalette = makePalette(rawCompleteColors);
 export const palette = basicPalette;
+const projectColors = new Map();
+export function registerProjectPalette(colors = []) {
+    for (const color of colors) projectColors.set(color.id, color);
+}
 export function hexToRgb(hex) {
     const normalized = hex.replace('#', '');
     const value = Number.parseInt(normalized, 16);
@@ -337,7 +341,7 @@ export function hexToRgb(hex) {
 export function getColor(id) {
     if (!id)
         return undefined;
-    return completePalette.find((color) => color.id === id);
+    return projectColors.get(id) ?? completePalette.find((color) => color.id === id);
 }
 export function nearestPaletteColor(rgb, candidates = palette) {
     let best = candidates[0];

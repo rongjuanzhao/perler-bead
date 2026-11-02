@@ -478,7 +478,7 @@ const defaultAdjustments = {
     temperature: 0,
     hue: 0,
 };
-export default function App() {
+export default function App({ initialHandoff = null }) {
     const fileInputRef = useRef(null);
     const referenceInputRef = useRef(null);
     const jsonInputRef = useRef(null);
@@ -488,7 +488,7 @@ export default function App() {
     const soloVisibilitySnapshotRef = useRef(null);
     const language = 'en';
     const text = ui[language];
-    const [project, setProject] = useState(() => loadDraft() ?? createProject());
+    const [project, setProject] = useState(() => initialHandoff?.project ?? loadDraft() ?? createProject());
     const [selectedColorId, setSelectedColorId] = useState(defaultColorId);
     const [recentColorIds, setRecentColorIds] = useState(defaultRecentColorIds);
     const [tool, setTool] = useState('pencil');
@@ -525,7 +525,7 @@ export default function App() {
     const [clipboardPattern, setClipboardPattern] = useState(null);
     const [copyMode, setCopyMode] = useState('connected');
     const [copySelectionIndices, setCopySelectionIndices] = useState([]);
-    const [pendingFile, setPendingFile] = useState(null);
+    const [pendingFile, setPendingFile] = useState(initialHandoff?.imageFile ?? null);
     const [pendingImageUrl, setPendingImageUrl] = useState(null);
     const [referenceFile, setReferenceFile] = useState(null);
     const [referenceImageUrl, setReferenceImageUrl] = useState(null);
@@ -537,10 +537,10 @@ export default function App() {
     const [referencePlacement, setReferencePlacement] = useState('below');
     const [canvasWidth, setCanvasWidth] = useState(project.width);
     const [canvasHeight, setCanvasHeight] = useState(project.height);
-    const [convertWidth, setConvertWidth] = useState(defaultImportSettings.width);
-    const [maxColors, setMaxColors] = useState(defaultImportSettings.maxColors);
+    const [convertWidth, setConvertWidth] = useState(project.converterConfig?.width ?? project.width);
+    const [maxColors, setMaxColors] = useState(project.converterConfig?.maxColors ?? defaultImportSettings.maxColors);
     const [generationStyle, setGenerationStyle] = useState(defaultImportSettings.generationStyle);
-    const [backgroundMode, setBackgroundMode] = useState(defaultImportSettings.backgroundMode);
+    const [backgroundMode, setBackgroundMode] = useState(project.converterConfig?.backgroundMode ?? defaultImportSettings.backgroundMode);
     const [tolerance, setTolerance] = useState(defaultImportSettings.tolerance);
     const [isGenerating, setIsGenerating] = useState(false);
     const [notice, setNotice] = useState(text.workspaceReady);
@@ -553,7 +553,8 @@ export default function App() {
     const [editingLayerName, setEditingLayerName] = useState('');
     const [draggingLayerId, setDraggingLayerId] = useState(null);
     const [dragTarget, setDragTarget] = useState(null);
-    const [paletteMode, setPaletteMode] = useState('basic');
+    const [paletteMode, setPaletteMode] = useState(project.editorPaletteMode ?? 'basic');
+    const previousGeneration = useRef({ file: initialHandoff?.imageFile ?? null, width: convertWidth, maxColors, generationStyle, backgroundMode, tolerance, paletteMode });
     const [paletteGroup, setPaletteGroup] = useState('all');
     const [adjustments, setAdjustments] = useState(defaultAdjustments);
     const [colorCleanupStrength, setColorCleanupStrength] = useState(2);
@@ -569,7 +570,7 @@ export default function App() {
     const isolatedBeads = isolatedBeadRefs.length;
     const isolatedCellIndices = useMemo(() => (showIsolatedBeads ? [...new Set(isolatedBeadRefs.map((item) => item.index))] : []), [isolatedBeadRefs, showIsolatedBeads]);
     const selectedColor = getColor(selectedColorId);
-    const activePalette = paletteMode === 'basic' ? basicPalette : completePalette;
+    const activePalette = paletteMode === 'imported' && project.customPalette ? project.customPalette.colors : paletteMode === 'basic' ? basicPalette : completePalette;
     const recentColors = recentColorIds.flatMap((id) => {
         const color = activePalette.find((item) => item.id === id);
         return color ? [color] : [];
@@ -658,6 +659,12 @@ export default function App() {
         saveDraft(project);
     }, [project]);
     useEffect(() => {
+        if (!initialHandoff?.imageFile) return;
+        const url = URL.createObjectURL(initialHandoff.imageFile);
+        setPendingImageUrl(url);
+        return () => URL.revokeObjectURL(url);
+    }, []);
+    useEffect(() => {
         return () => {
             if (pendingImageUrl)
                 URL.revokeObjectURL(pendingImageUrl);
@@ -706,6 +713,9 @@ export default function App() {
     useEffect(() => {
         if (!pendingFile)
             return;
+        const current = { file: pendingFile, width: convertWidth, maxColors, generationStyle, backgroundMode, tolerance, paletteMode };
+        if (Object.keys(current).every(key => current[key] === previousGeneration.current[key])) return;
+        previousGeneration.current = current;
         const timer = window.setTimeout(() => {
             const shouldCommit = autoGenerateShouldCommitRef.current;
             autoGenerateShouldCommitRef.current = false;
@@ -1031,7 +1041,9 @@ export default function App() {
             throw new Error(text.invalidRecord);
         }
         soloVisibilitySnapshotRef.current = null;
-        setProject(normalizeProject(imported));
+        const normalized = normalizeProject(imported);
+        setProject(normalized);
+        setPaletteMode(normalized.editorPaletteMode ?? 'basic');
         setPast([]);
         setFuture([]);
         setPendingFile(null);
@@ -1389,7 +1401,7 @@ export default function App() {
                                 text.colors,
                                 React.createElement("span", { className: "help-dot image-help-dot", ...imageHelpProps(text.colorsHint) }, "?")),
                             React.createElement("strong", null, maxColors)),
-                        React.createElement("input", { "aria-label": "Color limit", type: "range", min: 6, max: 48, step: 1, value: maxColors, onChange: (event) => setMaxColors(Number(event.target.value)) })),
+                        React.createElement("input", { "aria-label": "Color limit", type: "range", min: 4, max: 48, step: 1, value: maxColors, onChange: (event) => setMaxColors(Number(event.target.value)) })),
                     React.createElement("label", { className: "image-range-field" },
                         React.createElement("span", null,
                             React.createElement("span", { className: "field-label-with-help" },
@@ -1406,7 +1418,8 @@ export default function App() {
                     React.createElement("span", null, text.background),
                     React.createElement("select", { "aria-label": "Background handling", value: backgroundMode, onChange: (event) => setBackgroundMode(event.target.value) },
                         React.createElement("option", { value: "keep" }, text.keepBackground),
-                        React.createElement("option", { value: "remove-white" }, text.removeWhite)))),
+                        React.createElement("option", { value: "remove-white" }, text.removeWhite),
+                        React.createElement("option", { value: "remove-light" }, "Remove background")))),
             React.createElement("section", { className: "left-card reference-card" },
                 React.createElement("div", { className: "left-card-header" },
                     React.createElement("div", null,
@@ -1610,9 +1623,14 @@ export default function App() {
                         React.createElement("small", null, displayCode(color))))))),
                 React.createElement("div", { className: "readonly-brand-field" },
                     text.brandCodes,
-                    React.createElement("select", { value: paletteMode, onChange: (event) => setPaletteMode(event.target.value) },
+                    React.createElement("select", { value: paletteMode, onChange: (event) => {
+                        const mode = event.target.value;
+                        setPaletteMode(mode);
+                        updateProject({ ...project, editorPaletteMode: mode, activeBrand: mode === 'imported' ? project.customPalette.brand : 'MARD' });
+                    } },
                         React.createElement("option", { value: "basic" }, text.mardBasic),
-                        React.createElement("option", { value: "complete" }, text.mardComplete))),
+                        React.createElement("option", { value: "complete" }, text.mardComplete),
+                        project.customPalette && !project.customPalette.brand.startsWith('MARD') && React.createElement("option", { value: "imported" }, project.customPalette.brand))),
                 React.createElement("div", { className: "palette-filter", "aria-label": "Palette groups" }, paletteGroups.map((group) => (React.createElement("button", { key: group.id, className: paletteGroup === group.id ? 'active' : '', onClick: () => setPaletteGroup(group.id) }, group.label)))),
                 React.createElement("div", { className: "palette-grid" }, visiblePalette.map((color) => (React.createElement("button", { key: color.id, className: selectedColorId === color.id ? 'swatch active' : 'swatch', title: `${displayCode(color)} ${displayName(color)}`, onClick: () => {
                         selectColor(color.id);

@@ -6,6 +6,7 @@ import { externalPalettes, type PaletteBrand } from "@/src/components/bead-studi
 import { mardBasicPalette, mardCompletePalette } from "@/src/components/bead-studio/mard-palettes";
 import { formatMessage } from "./messages/format";
 import type { HomeMessages } from "./messages/types";
+import { saveConverterHandoff } from "../../../public/editor/src/handoff-store.js";
 
 const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
   { value: "MARD Basic", count: mardBasicPalette.length },
@@ -30,8 +31,8 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
   const [fileName, setFileName] = useState("");
   const [grid, setGrid] = useState(29);
   const [sourceRatio, setSourceRatio] = useState(1);
-  const [maxColors, setMaxColors] = useState(12);
-  const [brand, setBrand] = useState<PaletteBrand>("MARD Basic");
+  const [maxColors, setMaxColors] = useState(16);
+  const [brand, setBrand] = useState<PaletteBrand>("Perler");
   const [dragging, setDragging] = useState(false);
   const [cells, setCells] = useState<Array<number | null>>([]);
   const [backgroundMode, setBackgroundMode] = useState<"keep" | "remove-light">("keep");
@@ -39,6 +40,10 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
   const [showGrid, setShowGrid] = useState(true);
   const [showCodes, setShowCodes] = useState(true);
   const [hoveredColor, setHoveredColor] = useState<number | null>(null);
+  const [openingDesigner, setOpeningDesigner] = useState(false);
+  const [designerError, setDesignerError] = useState("");
+  const [renderedPatternKey, setRenderedPatternKey] = useState("");
+  const patternKey = JSON.stringify([fileUrl, grid, maxColors, brand, backgroundMode, sourceRatio]);
 
   const selectedPalette = useMemo(() => {
     if (brand === "MARD Basic") return mardBasicPalette;
@@ -56,8 +61,10 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
 
   useEffect(() => {
     if (!fileUrl || !canvasRef.current) return;
+    let cancelled = false;
     const image = new Image();
     image.onload = () => {
+      if (cancelled) return;
       const canvas = canvasRef.current;
       if (!canvas) return;
       const sampleCanvas = document.createElement("canvas");
@@ -89,9 +96,11 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
         const rgb = [pixels.data[pixelIndex], pixels.data[pixelIndex + 1], pixels.data[pixelIndex + 2]];
         return candidates.reduce((best, candidate) => distance(rgb, paletteRgb[candidate]) < distance(rgb, paletteRgb[best]) ? candidate : best, candidates[0]);
       }));
+      setRenderedPatternKey(patternKey);
     };
     image.src = fileUrl;
-  }, [backgroundMode, fileUrl, grid, gridHeight, maxColors, selectedPalette]);
+    return () => { cancelled = true; };
+  }, [backgroundMode, fileUrl, grid, gridHeight, maxColors, selectedPalette, patternKey]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -136,6 +145,25 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
       }
     });
   }, [beadShape, cells, fileUrl, grid, gridHeight, hoveredColor, selectedPalette, showCodes, showGrid]);
+
+  const openDesigner = async (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (openingDesigner || (fileUrl && renderedPatternKey !== patternKey)) return;
+    setOpeningDesigner(true);
+    setDesignerError("");
+    try {
+      const image = fileUrl ? await fetch(fileUrl).then((response) => response.blob()) : null;
+      const token = await saveConverterHandoff({
+        brand, width: grid, height: gridHeight, maxColors, backgroundMode, beadShape, showGrid, showCodes,
+        fileName, image, palette: selectedPalette,
+        cells: fileUrl ? cells.map((index) => index === null ? null : selectedPalette[index].code) : Array(grid * gridHeight).fill(null),
+      });
+      window.location.assign(`/editor?handoff=${encodeURIComponent(token)}`);
+    } catch {
+      setDesignerError("Could not open Designer. Please try again.");
+      setOpeningDesigner(false);
+    }
+  };
 
   const acceptFile = (file?: File) => {
     if (!file || !file.type.startsWith("image/")) return;
@@ -184,10 +212,11 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
       <div className="converter-toolbar">
         <strong>{messages.toolbarTitle}</strong>
         <div className="converter-toolbar-actions">
-          <a className="converter-create-action" href="/editor">{messages.designer} <span aria-hidden="true">→</span></a>
+          <a className="converter-create-action" href="/editor" onClick={openDesigner} aria-disabled={openingDesigner || Boolean(fileUrl && renderedPatternKey !== patternKey)}>{messages.designer} <span aria-hidden="true">→</span></a>
           {fileUrl && <button type="button" onClick={() => { setFileUrl(null); setCells([]); setHoveredColor(null); }}><X size={15} /> {messages.discard}</button>}
         </div>
       </div>
+      {designerError && <p role="alert">{designerError}</p>}
       <div className="studio-grid">
         <section className={`preview-workspace ${fileUrl ? "has-file" : "is-empty"}`}>
           {fileUrl ? <>
@@ -210,7 +239,7 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
           </div>
           {fileUrl ? <div className="usage-compact"><div><strong>{formatMessage(messages.colorList, { brand })}</strong><span>{formatMessage(messages.usageSummary, { colors: activePalette.length, beads: totalBeads })}</span></div><div className="usage-scroll">{selectedPalette.map((swatch, index) => counts[index] > 0 && <div className="usage-row" key={swatch.code}><i style={{ background: swatch.hex }} /><b>{swatch.code}</b><span>{swatch.name}</span><em>{counts[index]}</em></div>)}</div></div> : <p className="hint"><RefreshCw size={14} /> {messages.emptyHint}</p>}
           <div className="export-actions"><button className="primary-button full" onClick={download} disabled={!fileUrl}><Download size={17} /> {messages.exportImage}</button><button className="secondary-button full" onClick={downloadUsage} disabled={!fileUrl}><FileSpreadsheet size={16} /> {messages.exportColors}</button></div>
-          {fileUrl && <a className="full-editor-link" href="/editor">{messages.openEditor} <ExternalLink size={14} /></a>}
+          {fileUrl && <a className="full-editor-link" href="/editor" onClick={openDesigner} aria-disabled={openingDesigner || Boolean(fileUrl && renderedPatternKey !== patternKey)}>{messages.openEditor} <ExternalLink size={14} /></a>}
         </aside>
       </div>
     </>

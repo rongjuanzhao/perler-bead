@@ -1,4 +1,4 @@
-import { paletteVersion } from './palette.js';
+import { paletteVersion, registerProjectPalette } from './palette.js';
 export const autosaveKey = 'perler-beads-generator:draft';
 export function createProject(width = 52, height = 52, name = 'Untitled Pattern') {
     const now = new Date().toISOString();
@@ -95,6 +95,7 @@ export function composeVisibleCells(layers, width, height) {
     return result;
 }
 export function normalizeProject(project) {
+    registerProjectPalette(project.customPalette?.colors);
     const width = Number.isFinite(project.width) ? project.width : 29;
     const height = Number.isFinite(project.height) ? project.height : 29;
     const fallback = createProject(width, height, project.name);
@@ -116,7 +117,7 @@ export function normalizeProject(project) {
         ...project,
         width,
         height,
-        activeBrand: 'MARD',
+        activeBrand: project.activeBrand ?? 'MARD',
         settings,
         boardSettings: { ...fallback.boardSettings, ...project.boardSettings },
         layers,
