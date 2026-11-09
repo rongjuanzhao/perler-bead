@@ -4,20 +4,10 @@ import { ChangeEvent, DragEvent, type MouseEvent as ReactMouseEvent, useEffect, 
 import { Download, ExternalLink, FileSpreadsheet, Grid3X3, ImagePlus, RefreshCw, X } from "lucide-react";
 import { externalPalettes, type PaletteBrand } from "@/src/components/bead-studio/brand-palettes";
 import { mardBasicPalette, mardCompletePalette } from "@/src/components/bead-studio/mard-palettes";
+import { paletteOptions } from "../../../public/editor/src/palettes/catalog.js";
 import { formatMessage } from "./messages/format";
 import type { HomeMessages } from "./messages/types";
 import { saveConverterHandoff } from "../../../public/editor/src/handoff-store.js";
-
-const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
-  { value: "MARD Basic", count: mardBasicPalette.length },
-  { value: "MARD Complete", count: mardCompletePalette.length },
-  { value: "Perler", count: externalPalettes.Perler.length },
-  { value: "Hama", count: externalPalettes.Hama.length },
-  { value: "Artkal S", count: externalPalettes["Artkal S"].length },
-  { value: "Artkal C", count: externalPalettes["Artkal C"].length },
-  { value: "Artkal M", count: externalPalettes["Artkal M"].length },
-  { value: "COCO", count: externalPalettes.COCO.length },
-];
 
 const distance = (a: number[], b: number[]) =>
   Math.pow(a[0] - b[0], 2) * .3 + Math.pow(a[1] - b[1], 2) * .59 + Math.pow(a[2] - b[2], 2) * .11;

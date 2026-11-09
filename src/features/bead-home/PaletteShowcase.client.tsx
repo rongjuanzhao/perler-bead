@@ -6,19 +6,9 @@ import { ArrowRight } from "lucide-react";
 import { colorLibraries } from "@/src/features/beadcolor/libraries";
 import { externalPalettes, type PaletteBrand } from "@/src/components/bead-studio/brand-palettes";
 import { mardBasicPalette, mardCompletePalette } from "@/src/components/bead-studio/mard-palettes";
+import { paletteOptions } from "../../../public/editor/src/palettes/catalog.js";
 import { formatMessage } from "./messages/format";
 import type { HomeMessages } from "./messages/types";
-
-const paletteOptions: Array<{ value: PaletteBrand; count: number }> = [
-  { value: "Perler", count: externalPalettes.Perler.length },
-  { value: "MARD Basic", count: mardBasicPalette.length },
-  { value: "MARD Complete", count: mardCompletePalette.length },
-  { value: "Hama", count: externalPalettes.Hama.length },
-  { value: "Artkal S", count: externalPalettes["Artkal S"].length },
-  { value: "Artkal C", count: externalPalettes["Artkal C"].length },
-  { value: "Artkal M", count: externalPalettes["Artkal M"].length },
-  { value: "COCO", count: externalPalettes.COCO.length },
-];
 
 export default function PaletteShowcase({ messages }: { messages: HomeMessages["palette"] }) {
   const [brand, setBrand] = useState<PaletteBrand>("Perler");
@@ -35,7 +25,7 @@ export default function PaletteShowcase({ messages }: { messages: HomeMessages["
         <h2>{formatMessage(messages.title, { brand })}</h2>
         <p>{messages.description}</p>
         <div className="palette-tabs" aria-label={messages.chooserLabel}>
-          {paletteOptions.map((option) => <button type="button" className={brand === option.value ? "is-active" : ""} aria-pressed={brand === option.value} key={option.value} onClick={() => setBrand(option.value)}><span>{option.value}</span><small>{formatMessage(messages.colors, { count: option.count })}</small></button>)}
+          {paletteOptions.map((option) => <button type="button" className={brand === option.value ? "is-active" : ""} aria-pressed={brand === option.value} key={option.value} onClick={() => setBrand(option.value as PaletteBrand)}><span>{option.value}</span><small>{formatMessage(messages.colors, { count: option.count })}</small></button>)}
         </div>
         {selectedLibrary && <Link className="palette-view-all" href={`/beadcolor/${selectedLibrary.slug}`}>{messages.viewAll} <ArrowRight size={16} aria-hidden="true" /></Link>}
       </div>

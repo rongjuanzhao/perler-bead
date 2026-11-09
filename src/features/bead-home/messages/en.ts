@@ -72,6 +72,8 @@ export const enMessages: HomeMessages = {
     csvHeaders: ["Brand", "Code", "Color", "Hex", "Beads"],
   },
   templates: {
+    brandLabel: "Bead brand",
+    brandHint: "Preview and downloads use the closest colors in your selected brand palette.",
     title: "Bead Templates",
     description: "Choose a Perler bead pattern to see its size, materials, and project details.",
     colors: "{count} colors",
@@ -90,7 +92,7 @@ export const enMessages: HomeMessages = {
     imageLabel: "{title} bead pattern",
     patternFileName: "{id}-bead-pattern.png",
     colorsFileName: "{id}-color-list.csv",
-    csvHeaders: ["Template", "Grid", "Color", "Hex", "Beads"],
+    csvHeaders: ["Template", "Grid", "Brand", "Code", "Color", "Hex", "Beads"],
     items: {
       campfire: { title: "Campfire", description: "A warm miniature campfire with layered flames and a sturdy log base.", difficulty: "Beginner", pegboard: "Small 29×29", colorNames: { R: "Cherry Red", O: "Tangerine", Y: "Sun Yellow", B: "Cocoa Brown" } },
       slime: { title: "Happy Slime", description: "A friendly green slime character designed as a quick first pattern.", difficulty: "Beginner", pegboard: "Small 29×29", colorNames: { L: "Lime Green", G: "Forest Green", K: "Black" } },

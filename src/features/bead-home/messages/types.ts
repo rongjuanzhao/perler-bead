@@ -72,6 +72,8 @@ export type HomeMessages = {
     csvHeaders: string[];
   };
   templates: {
+    brandLabel: string;
+    brandHint: string;
     title: string;
     description: string;
     colors: string;

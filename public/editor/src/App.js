@@ -2,7 +2,7 @@ import WorkspaceCanvas from './WorkspaceCanvas.js';
 import ThreePreview from './ThreePreview.js';
 import { downloadPrintPdf, downloadPrintPng, downloadProjectJson, downloadUsageWorkbook } from './exporters.js';
 import { imageFileToBeads } from './imageToBeads.js';
-import { basicPalette, colorDistance, completePalette, getColor, nearestPaletteColor } from './palette.js';
+import { colorDistance, getColor, getProjectPalette, nearestPaletteColor, paletteOptions, resolvePaletteMode } from './palette.js';
 import { composeVisibleCells, createLayer, createProject, loadDraft, normalizeProject, saveDraft, withCells, withLayers } from './project.js';
 import { findIsolatedBeads, summarizeUsage } from './usage.js';
 const { useEffect, useMemo, useRef, useState } = React;
@@ -553,7 +553,7 @@ export default function App({ initialHandoff = null }) {
     const [editingLayerName, setEditingLayerName] = useState('');
     const [draggingLayerId, setDraggingLayerId] = useState(null);
     const [dragTarget, setDragTarget] = useState(null);
-    const [paletteMode, setPaletteMode] = useState(project.editorPaletteMode ?? 'basic');
+    const paletteMode = resolvePaletteMode(project);
     const previousGeneration = useRef({ file: initialHandoff?.imageFile ?? null, width: convertWidth, maxColors, generationStyle, backgroundMode, tolerance, paletteMode });
     const [paletteGroup, setPaletteGroup] = useState('all');
     const [adjustments, setAdjustments] = useState(defaultAdjustments);
@@ -570,7 +570,7 @@ export default function App({ initialHandoff = null }) {
     const isolatedBeads = isolatedBeadRefs.length;
     const isolatedCellIndices = useMemo(() => (showIsolatedBeads ? [...new Set(isolatedBeadRefs.map((item) => item.index))] : []), [isolatedBeadRefs, showIsolatedBeads]);
     const selectedColor = getColor(selectedColorId);
-    const activePalette = paletteMode === 'imported' && project.customPalette ? project.customPalette.colors : paletteMode === 'basic' ? basicPalette : completePalette;
+    const activePalette = getProjectPalette(project);
     const recentColors = recentColorIds.flatMap((id) => {
         const color = activePalette.find((item) => item.id === id);
         return color ? [color] : [];
@@ -1043,7 +1043,6 @@ export default function App({ initialHandoff = null }) {
         soloVisibilitySnapshotRef.current = null;
         const normalized = normalizeProject(imported);
         setProject(normalized);
-        setPaletteMode(normalized.editorPaletteMode ?? 'basic');
         setPast([]);
         setFuture([]);
         setPendingFile(null);
@@ -1625,12 +1624,10 @@ export default function App({ initialHandoff = null }) {
                     text.brandCodes,
                     React.createElement("select", { value: paletteMode, onChange: (event) => {
                         const mode = event.target.value;
-                        setPaletteMode(mode);
-                        updateProject({ ...project, editorPaletteMode: mode, activeBrand: mode === 'imported' ? project.customPalette.brand : 'MARD' });
+                        updateProject({ ...project, editorPaletteMode: mode, activeBrand: mode.startsWith('MARD ') ? 'MARD' : mode });
                     } },
-                        React.createElement("option", { value: "basic" }, text.mardBasic),
-                        React.createElement("option", { value: "complete" }, text.mardComplete),
-                        project.customPalette && !project.customPalette.brand.startsWith('MARD') && React.createElement("option", { value: "imported" }, project.customPalette.brand))),
+                        paletteOptions.map(({ value }) => React.createElement("option", { key: value, value }, value)),
+                        project.customPalette && !paletteOptions.some(({ value }) => value === project.customPalette.brand) && React.createElement("option", { value: project.customPalette.brand }, project.customPalette.brand))),
                 React.createElement("div", { className: "palette-filter", "aria-label": "Palette groups" }, paletteGroups.map((group) => (React.createElement("button", { key: group.id, className: paletteGroup === group.id ? 'active' : '', onClick: () => setPaletteGroup(group.id) }, group.label)))),
                 React.createElement("div", { className: "palette-grid" }, visiblePalette.map((color) => (React.createElement("button", { key: color.id, className: selectedColorId === color.id ? 'swatch active' : 'swatch', title: `${displayCode(color)} ${displayName(color)}`, onClick: () => {
                         selectColor(color.id);
