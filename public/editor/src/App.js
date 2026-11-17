@@ -68,6 +68,12 @@ const ui = {
         generationStyle: '生成风格',
         generationStyleCartoon: '卡通',
         generationStyleRealistic: '写实',
+        dither: '抖动平滑',
+        ditherHint: '利用误差扩散减少渐变色带；关闭更纯净，高数值渐变更自然。',
+        ditherNone: '关闭',
+        ditherLow: '轻度 (25%)',
+        ditherMedium: '适中 (50%)',
+        ditherHigh: '强烈 (85%)',
         tolerance: '容差',
         toleranceHint: '容差越大，越多接近背景色的像素会被去除；容差越小，边缘保留越多。',
         background: '背景',
@@ -284,6 +290,12 @@ const ui = {
         generationStyle: 'Style',
         generationStyleCartoon: 'Cartoon',
         generationStyleRealistic: 'Realistic',
+        dither: 'Dithering',
+        ditherHint: 'Diffuses colors to reduce color banding in gradients. Off is cleaner, higher is smoother.',
+        ditherNone: 'Off',
+        ditherLow: 'Subtle (25%)',
+        ditherMedium: 'Medium (50%)',
+        ditherHigh: 'Strong (85%)',
         tolerance: 'Tolerance',
         toleranceHint: 'Higher tolerance removes more pixels close to the background color; lower tolerance keeps more edge detail.',
         background: 'Background',
@@ -465,6 +477,7 @@ const defaultImportSettings = {
     width: 52,
     maxColors: 24,
     generationStyle: 'cartoon',
+    dither: 0,
     backgroundMode: 'keep',
     tolerance: 32,
     speckleReduction: 0,
@@ -539,7 +552,8 @@ export default function App({ initialHandoff = null }) {
     const [canvasHeight, setCanvasHeight] = useState(project.height);
     const [convertWidth, setConvertWidth] = useState(project.converterConfig?.width ?? project.width);
     const [maxColors, setMaxColors] = useState(project.converterConfig?.maxColors ?? defaultImportSettings.maxColors);
-    const [generationStyle, setGenerationStyle] = useState(defaultImportSettings.generationStyle);
+    const [generationStyle, setGenerationStyle] = useState(project.converterConfig?.generationStyle ?? defaultImportSettings.generationStyle);
+    const [dither, setDither] = useState(project.converterConfig?.dither ?? defaultImportSettings.dither);
     const [backgroundMode, setBackgroundMode] = useState(project.converterConfig?.backgroundMode ?? defaultImportSettings.backgroundMode);
     const [tolerance, setTolerance] = useState(defaultImportSettings.tolerance);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -554,7 +568,7 @@ export default function App({ initialHandoff = null }) {
     const [draggingLayerId, setDraggingLayerId] = useState(null);
     const [dragTarget, setDragTarget] = useState(null);
     const paletteMode = resolvePaletteMode(project);
-    const previousGeneration = useRef({ file: initialHandoff?.imageFile ?? null, width: convertWidth, maxColors, generationStyle, backgroundMode, tolerance, paletteMode });
+    const previousGeneration = useRef({ file: initialHandoff?.imageFile ?? null, width: convertWidth, maxColors, generationStyle, dither, backgroundMode, tolerance, paletteMode });
     const [paletteGroup, setPaletteGroup] = useState('all');
     const [adjustments, setAdjustments] = useState(defaultAdjustments);
     const [colorCleanupStrength, setColorCleanupStrength] = useState(2);
@@ -713,7 +727,7 @@ export default function App({ initialHandoff = null }) {
     useEffect(() => {
         if (!pendingFile)
             return;
-        const current = { file: pendingFile, width: convertWidth, maxColors, generationStyle, backgroundMode, tolerance, paletteMode };
+        const current = { file: pendingFile, width: convertWidth, maxColors, generationStyle, dither, backgroundMode, tolerance, paletteMode };
         if (Object.keys(current).every(key => current[key] === previousGeneration.current[key])) return;
         previousGeneration.current = current;
         const timer = window.setTimeout(() => {
@@ -722,7 +736,7 @@ export default function App({ initialHandoff = null }) {
             void generateFromImage({ recordHistory: shouldCommit, automatic: true });
         }, 420);
         return () => window.clearTimeout(timer);
-    }, [pendingFile, convertWidth, maxColors, generationStyle, backgroundMode, tolerance, paletteMode]);
+    }, [pendingFile, convertWidth, maxColors, generationStyle, dither, backgroundMode, tolerance, paletteMode]);
     function commitHistory() {
         setPast((items) => [...items.slice(-39), project]);
         setFuture([]);
@@ -756,6 +770,7 @@ export default function App({ initialHandoff = null }) {
         setConvertWidth(defaultImportSettings.width);
         setMaxColors(defaultImportSettings.maxColors);
         setGenerationStyle(defaultImportSettings.generationStyle);
+        setDither(defaultImportSettings.dither);
         setBackgroundMode(defaultImportSettings.backgroundMode);
         setTolerance(defaultImportSettings.tolerance);
     }
@@ -982,6 +997,7 @@ export default function App({ initialHandoff = null }) {
                 maxColors,
                 palette: activePalette,
                 generationStyle,
+                dither,
                 backgroundMode,
                 backgroundColor: [255, 255, 255],
                 tolerance,
@@ -1413,6 +1429,15 @@ export default function App({ initialHandoff = null }) {
                     React.createElement("select", { "aria-label": "Generation style", value: generationStyle, onChange: (event) => setGenerationStyle(event.target.value) },
                         React.createElement("option", { value: "cartoon" }, text.generationStyleCartoon),
                         React.createElement("option", { value: "realistic" }, text.generationStyleRealistic))),
+                React.createElement("label", { className: "stacked-field image-dither-field" },
+                    React.createElement("span", null,
+                        text.dither,
+                        React.createElement("span", { className: "help-dot image-help-dot", ...imageHelpProps(text.ditherHint) }, "?")),
+                    React.createElement("select", { "aria-label": "Dithering level", value: dither, onChange: (event) => setDither(Number(event.target.value)) },
+                        React.createElement("option", { value: 0 }, text.ditherNone),
+                        React.createElement("option", { value: 0.25 }, text.ditherLow),
+                        React.createElement("option", { value: 0.5 }, text.ditherMedium),
+                        React.createElement("option", { value: 0.85 }, text.ditherHigh))),
                 React.createElement("label", { className: "stacked-field image-background-field" },
                     React.createElement("span", null, text.background),
                     React.createElement("select", { "aria-label": "Background handling", value: backgroundMode, onChange: (event) => setBackgroundMode(event.target.value) },

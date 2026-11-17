@@ -33,7 +33,13 @@ export async function readConverterHandoff() {
     project.activeBrand = isMard ? 'MARD' : data.brand;
     project.customPalette = { brand: data.brand, colors };
     project.editorPaletteMode = isMard ? (data.brand === 'MARD Basic' ? 'basic' : 'complete') : 'imported';
-    project.converterConfig = { width: data.width, maxColors: data.maxColors, backgroundMode: data.backgroundMode };
+    project.converterConfig = {
+        width: data.width,
+        maxColors: data.maxColors,
+        backgroundMode: data.backgroundMode,
+        generationStyle: data.generationStyle,
+        dither: data.dither,
+    };
     Object.assign(project.settings, { showGrid: data.showGrid, showColorCodes: data.showCodes, beadDisplayMode: data.beadShape });
     return {
         project: normalizeProject(project),

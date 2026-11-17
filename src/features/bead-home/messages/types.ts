@@ -55,6 +55,13 @@ export type HomeMessages = {
     background: string;
     keepBackground: string;
     removeBackground: string;
+    styleLabel?: string;
+    styleCartoon?: string;
+    styleRealistic?: string;
+    ditherLabel?: string;
+    ditherOff?: string;
+    ditherSubtle?: string;
+    ditherSmooth?: string;
     beadShape: string;
     square: string;
     round: string;

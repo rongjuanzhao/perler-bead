@@ -8,11 +8,13 @@ import { paletteOptions } from "../../../public/editor/src/palettes/catalog.js";
 import { formatMessage } from "./messages/format";
 import type { HomeMessages } from "./messages/types";
 import { saveConverterHandoff } from "../../../public/editor/src/handoff-store.js";
+import { convertSourceToBeads } from "../../../public/editor/src/imageToBeads.js";
 
-const distance = (a: number[], b: number[]) =>
-  Math.pow(a[0] - b[0], 2) * .3 + Math.pow(a[1] - b[1], 2) * .59 + Math.pow(a[2] - b[2], 2) * .11;
-
-const hexRgb = (hex: string) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+const hexRgb = (hex: string): [number, number, number] => [
+  parseInt(hex.slice(1, 3), 16),
+  parseInt(hex.slice(3, 5), 16),
+  parseInt(hex.slice(5, 7), 16),
+];
 
 export default function QuickConverter({ messages }: { messages: HomeMessages["converter"] }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,6 +25,8 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
   const [sourceRatio, setSourceRatio] = useState(1);
   const [maxColors, setMaxColors] = useState(16);
   const [brand, setBrand] = useState<PaletteBrand>("Perler");
+  const [generationStyle, setGenerationStyle] = useState<"cartoon" | "realistic">("cartoon");
+  const [dither, setDither] = useState<number>(0);
   const [dragging, setDragging] = useState(false);
   const [cells, setCells] = useState<Array<number | null>>([]);
   const [backgroundMode, setBackgroundMode] = useState<"keep" | "remove-light">("keep");
@@ -33,7 +37,7 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
   const [openingDesigner, setOpeningDesigner] = useState(false);
   const [designerError, setDesignerError] = useState("");
   const [renderedPatternKey, setRenderedPatternKey] = useState("");
-  const patternKey = JSON.stringify([fileUrl, grid, maxColors, brand, backgroundMode, sourceRatio]);
+  const patternKey = JSON.stringify([fileUrl, grid, maxColors, brand, backgroundMode, sourceRatio, generationStyle, dither]);
 
   const selectedPalette = useMemo(() => {
     if (brand === "MARD Basic") return mardBasicPalette;
@@ -52,45 +56,57 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
   useEffect(() => {
     if (!fileUrl || !canvasRef.current) return;
     let cancelled = false;
-    const image = new Image();
-    image.onload = () => {
-      if (cancelled) return;
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const sampleCanvas = document.createElement("canvas");
-      sampleCanvas.width = grid;
-      sampleCanvas.height = gridHeight;
-      const context = sampleCanvas.getContext("2d", { willReadFrequently: true });
-      if (!context) return;
-      context.imageSmoothingEnabled = true;
-      context.drawImage(image, 0, 0, grid, gridHeight);
-      const pixels = context.getImageData(0, 0, grid, gridHeight);
-      const paletteRgb = selectedPalette.map((swatch) => hexRgb(swatch.hex));
-      const cornerIndexes = [0, (grid - 1) * 4, (gridHeight - 1) * grid * 4, ((gridHeight * grid) - 1) * 4];
-      const background = [0, 1, 2].map((channel) => Math.round(cornerIndexes.reduce((sum, index) => sum + pixels.data[index + channel], 0) / 4));
-      const nearest = Array<number | null>(grid * gridHeight).fill(null);
-      const frequency = Array(selectedPalette.length).fill(0) as number[];
-      for (let i = 0; i < pixels.data.length; i += 4) {
-        if (pixels.data[i + 3] < 80) continue;
-        const rgb = [pixels.data[i], pixels.data[i + 1], pixels.data[i + 2]];
-        if (backgroundMode === "remove-light" && distance(rgb, background) < 1150) continue;
-        // Transparent reference entries have no opaque RGB to match a photo.
-        const closest = paletteRgb.reduce((best, candidate, index) => !selectedPalette[index].transparent && distance(rgb, candidate) < distance(rgb, paletteRgb[best]) ? index : best, 0);
-        nearest[i / 4] = closest;
-        frequency[closest]++;
+
+    async function processPattern() {
+      try {
+        const opaqueSwatches = selectedPalette.filter((swatch) => !swatch.transparent);
+        const codeToIndex = new Map<string, number>();
+        selectedPalette.forEach((swatch, idx) => {
+          if (!swatch.transparent) {
+            codeToIndex.set(swatch.code, idx);
+          }
+        });
+
+        const activeCandidates = opaqueSwatches.map((swatch) => ({
+          id: swatch.code,
+          primaryCode: swatch.code,
+          code: swatch.code,
+          name: swatch.name,
+          hex: swatch.hex,
+          rgb: hexRgb(swatch.hex),
+        }));
+
+        const result = await convertSourceToBeads(fileUrl, {
+          width: grid,
+          height: gridHeight,
+          maxColors,
+          palette: activeCandidates,
+          generationStyle,
+          dither,
+          backgroundMode: backgroundMode === "remove-light" ? "remove-light" : "keep",
+          tolerance: 32,
+        });
+
+        if (cancelled) return;
+
+        const nextCells = result.cells.map((colorId: string | null) => {
+          if (!colorId) return null;
+          return codeToIndex.get(colorId) ?? null;
+        });
+
+        setCells(nextCells);
+        setRenderedPatternKey(patternKey);
+      } catch (err) {
+        console.error("Pattern generation failed:", err);
       }
-      const candidates = frequency.map((count, index) => ({ count, index })).filter((item) => item.count > 0).sort((a, b) => b.count - a.count).slice(0, maxColors).map((item) => item.index);
-      setCells(nearest.map((current, cellIndex) => {
-        if (current === null || candidates.length === 0) return null;
-        const pixelIndex = cellIndex * 4;
-        const rgb = [pixels.data[pixelIndex], pixels.data[pixelIndex + 1], pixels.data[pixelIndex + 2]];
-        return candidates.reduce((best, candidate) => distance(rgb, paletteRgb[candidate]) < distance(rgb, paletteRgb[best]) ? candidate : best, candidates[0]);
-      }));
-      setRenderedPatternKey(patternKey);
+    }
+
+    void processPattern();
+
+    return () => {
+      cancelled = true;
     };
-    image.src = fileUrl;
-    return () => { cancelled = true; };
-  }, [backgroundMode, fileUrl, grid, gridHeight, maxColors, selectedPalette, patternKey]);
+  }, [backgroundMode, fileUrl, generationStyle, dither, grid, gridHeight, maxColors, selectedPalette, patternKey]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -145,6 +161,7 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
       const image = fileUrl ? await fetch(fileUrl).then((response) => response.blob()) : null;
       const token = await saveConverterHandoff({
         brand, width: grid, height: gridHeight, maxColors, backgroundMode, beadShape, showGrid, showCodes,
+        generationStyle, dither,
         fileName, image, palette: selectedPalette,
         cells: fileUrl ? cells.map((index) => index === null ? null : selectedPalette[index].code) : Array(grid * gridHeight).fill(null),
       });
@@ -223,6 +240,35 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
           <div className="control-block"><label htmlFor="grid-size">{messages.patternWidth} <strong>{formatMessage(messages.beads, { count: grid })}</strong></label><input id="grid-size" type="range" min="16" max="58" step="1" value={grid} onChange={(event) => setGrid(Number(event.target.value))} /><div className="range-ends"><span>{formatMessage(messages.beads, { count: 16 })}</span><span>{formatMessage(messages.beads, { count: 58 })}</span></div></div>
           <div className="control-block"><label htmlFor="color-count">{messages.colorLimit} <strong>{formatMessage(messages.colors, { count: maxColors })}</strong></label><input id="color-count" type="range" min="4" max="24" value={maxColors} onChange={(event) => setMaxColors(Number(event.target.value))} /><div className="range-ends"><span>{messages.simple}</span><span>{messages.detailed}</span></div></div>
           <div className="quick-options">
+            <div className="option-row">
+              <label htmlFor="bead-style" style={{ fontSize: "0.85rem", fontWeight: 600 }}>{messages.styleLabel ?? "Style"}</label>
+              <select
+                id="bead-style"
+                value={generationStyle}
+                onChange={(event) => {
+                  const nextStyle = event.target.value as "cartoon" | "realistic";
+                  setGenerationStyle(nextStyle);
+                  if (nextStyle === "cartoon" && dither > 0.3) setDither(0);
+                  if (nextStyle === "realistic" && dither === 0) setDither(0.5);
+                }}
+              >
+                <option value="cartoon">{messages.styleCartoon ?? "Cartoon / Outline"}</option>
+                <option value="realistic">{messages.styleRealistic ?? "Realistic / Photo"}</option>
+              </select>
+            </div>
+            <div className="option-row">
+              <label htmlFor="bead-dither" style={{ fontSize: "0.85rem", fontWeight: 600 }}>{messages.ditherLabel ?? "Dithering"}</label>
+              <select
+                id="bead-dither"
+                value={dither}
+                onChange={(event) => setDither(Number(event.target.value))}
+              >
+                <option value={0}>{messages.ditherOff ?? "Off (Solid)"}</option>
+                <option value={0.25}>{messages.ditherSubtle ?? "Subtle (25%)"}</option>
+                <option value={0.5}>{messages.ditherSmooth ?? "Smooth (50%)"}</option>
+                <option value={0.85}>Strong (85%)</option>
+              </select>
+            </div>
             <label><span>{messages.background}</span><select value={backgroundMode} onChange={(event) => setBackgroundMode(event.target.value as "keep" | "remove-light")}><option value="keep">{messages.keepBackground}</option><option value="remove-light">{messages.removeBackground}</option></select></label>
             <div className="option-row"><span>{messages.beadShape}</span><div className="segmented"><button className={beadShape === "pixel" ? "active" : ""} onClick={() => setBeadShape("pixel")}>{messages.square}</button><button className={beadShape === "bead" ? "active" : ""} onClick={() => setBeadShape("bead")}>{messages.round}</button></div></div>
             <div className="toggle-row"><label><input type="checkbox" checked={showGrid} onChange={(event) => setShowGrid(event.target.checked)} /> {messages.grid}</label><label><input type="checkbox" checked={showCodes} onChange={(event) => setShowCodes(event.target.checked)} /> {messages.colorCodes}</label></div>
