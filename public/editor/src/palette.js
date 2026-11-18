@@ -103,8 +103,7 @@ export function getColor(id) {
         return undefined;
     return projectColors.get(id) ?? catalogColors.get(id);
 }
-export function nearestPaletteColor(rgb, candidates = palette) {
-    const targetLab = Array.isArray(rgb) && rgb.length === 3 ? rgbToOklab(rgb) : rgb;
+export function nearestPaletteColorFromLab(lab, candidates = palette) {
     let best = candidates[0];
     let bestDistance = Number.POSITIVE_INFINITY;
     for (let i = 0; i < candidates.length; i++) {
@@ -112,9 +111,9 @@ export function nearestPaletteColor(rgb, candidates = palette) {
         if (!color.oklab) {
             color.oklab = rgbToOklab(color.rgb);
         }
-        const dL = targetLab[0] - color.oklab[0];
-        const da = targetLab[1] - color.oklab[1];
-        const db = targetLab[2] - color.oklab[2];
+        const dL = lab[0] - color.oklab[0];
+        const da = lab[1] - color.oklab[1];
+        const db = lab[2] - color.oklab[2];
         const distance = dL * dL + 1.25 * (da * da + db * db);
         if (distance < bestDistance) {
             best = color;
@@ -122,6 +121,24 @@ export function nearestPaletteColor(rgb, candidates = palette) {
         }
     }
     return best;
+}
+
+export function nearestPaletteColor(rgbOrLab, candidates = palette) {
+    if (!rgbOrLab) return candidates[0];
+    if (rgbOrLab.oklab) {
+        return nearestPaletteColorFromLab(rgbOrLab.oklab, candidates);
+    }
+    if (Array.isArray(rgbOrLab)) {
+        const isLab = rgbOrLab[0] <= 1.05 && (
+            rgbOrLab[1] < 0 || rgbOrLab[2] < 0 ||
+            (rgbOrLab[0] > 0 && rgbOrLab[0] < 1 && rgbOrLab[1] < 0.6 && rgbOrLab[2] < 0.6)
+        );
+        if (isLab) {
+            return nearestPaletteColorFromLab(rgbOrLab, candidates);
+        }
+        return nearestPaletteColorFromLab(rgbToOklab(rgbOrLab), candidates);
+    }
+    return candidates[0];
 }
 export function colorDistance(a, b) {
     const labA = a?.oklab ?? (Array.isArray(a) ? rgbToOklab(a) : (a?.rgb ? rgbToOklab(a.rgb) : null));

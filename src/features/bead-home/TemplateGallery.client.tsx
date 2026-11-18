@@ -117,7 +117,16 @@ export default function TemplateGallery({ messages }: { messages: Messages }) {
             <dl><dt>{messages.difficulty}</dt><dd>{selectedMessages.difficulty}</dd><dt>{messages.time}</dt><dd>{formatMessage(messages.minutes, { count: selected.minutes })}</dd><dt>{messages.pegboard}</dt><dd>{selectedMessages.pegboard}</dd></dl>
           </div>
           <div className="template-supplies"><h4>{messages.supplies}</h4><p>{formatMessage(messages.suppliesDescription, { pegboard: selectedMessages.pegboard })}</p><ul>{usage.map((color) => <li key={color.code}><i style={{ background: color.hex }} /><span title={`${brand} ${color.code} · ${color.name} · ${color.hex}`}>{color.count} × <strong>{color.code}</strong> · {color.name}</span></li>)}</ul></div>
-          <div className="template-downloads"><button type="button" className="template-download-button primary" onClick={() => downloadTemplatePng(selected, messages)}><Download size={16} /> {messages.downloadPng}</button><button type="button" className="template-download-button" onClick={() => downloadTemplateColors(selected, messages)}><FileSpreadsheet size={16} /> {messages.downloadColors}</button></div>
+          <div className="template-downloads">
+            <button type="button" className="template-download-button primary" onClick={() => downloadTemplatePng(selected, messages)}>
+              <Download size={16} />
+              <span>{messages.downloadPng}</span>
+            </button>
+            <button type="button" className="template-download-button" onClick={() => downloadTemplateColors(selected, messages)}>
+              <FileSpreadsheet size={16} />
+              <span>{messages.downloadColors}</span>
+            </button>
+          </div>
         </div>
       </article>
     </section>

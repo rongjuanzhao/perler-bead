@@ -274,7 +274,16 @@ export default function QuickConverter({ messages }: { messages: HomeMessages["c
             <div className="toggle-row"><label><input type="checkbox" checked={showGrid} onChange={(event) => setShowGrid(event.target.checked)} /> {messages.grid}</label><label><input type="checkbox" checked={showCodes} onChange={(event) => setShowCodes(event.target.checked)} /> {messages.colorCodes}</label></div>
           </div>
           {fileUrl ? <div className="usage-compact"><div><strong>{formatMessage(messages.colorList, { brand })}</strong><span>{formatMessage(messages.usageSummary, { colors: activePalette.length, beads: totalBeads })}</span></div><div className="usage-scroll">{selectedPalette.map((swatch, index) => counts[index] > 0 && <div className="usage-row" key={swatch.code}><i style={{ background: swatch.hex }} /><b>{swatch.code}</b><span>{swatch.name}</span><em>{counts[index]}</em></div>)}</div></div> : <p className="hint"><RefreshCw size={14} /> {messages.emptyHint}</p>}
-          <div className="export-actions"><button className="primary-button full" onClick={download} disabled={!fileUrl}><Download size={17} /> {messages.exportImage}</button><button className="secondary-button full" onClick={downloadUsage} disabled={!fileUrl}><FileSpreadsheet size={16} /> {messages.exportColors}</button></div>
+          <div className="export-actions">
+            <button className="primary-button full" onClick={download} disabled={!fileUrl}>
+              <Download size={16} />
+              <span>{messages.exportImage}</span>
+            </button>
+            <button className="secondary-button full" onClick={downloadUsage} disabled={!fileUrl}>
+              <FileSpreadsheet size={16} />
+              <span>{messages.exportColors}</span>
+            </button>
+          </div>
           {fileUrl && <a className="full-editor-link" href="/editor" onClick={openDesigner} aria-disabled={openingDesigner || Boolean(fileUrl && renderedPatternKey !== patternKey)}>{messages.openEditor} <ExternalLink size={14} /></a>}
         </aside>
       </div>
